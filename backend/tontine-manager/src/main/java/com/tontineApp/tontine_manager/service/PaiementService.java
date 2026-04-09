@@ -2,6 +2,7 @@ package com.tontineApp.tontine_manager.service;
 
 import com.tontineApp.tontine_manager.dto.UserCotisation;
 import com.tontineApp.tontine_manager.repository.PaiementRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public class PaiementService {
         return paiementRepository.getCotisationAttente();
     }
 
-    public
+    public void confirmerPaiement(int id,boolean valide){
+        paiementRepository.updateStatutPaiement(id,valide);
+    }
 }
