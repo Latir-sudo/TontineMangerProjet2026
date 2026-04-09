@@ -15,7 +15,6 @@ DROP TABLE IF EXISTS TONTINE CASCADE;
 DROP TABLE IF EXISTS COTISATION CASCADE;
 DROP TABLE IF EXISTS UTILISATEURS CASCADE;
 
-
 /*==============================================================*/
 /* UTILISATEURS                                                 */
 /*==============================================================*/
@@ -30,7 +29,6 @@ CREATE TABLE UTILISATEURS (
    VILLE VARCHAR(30)
 );
 
-
 /*==============================================================*/
 /* ROLE                                                         */
 /*==============================================================*/
@@ -43,7 +41,6 @@ INSERT INTO ROLE (NOM_ROLE) VALUES
 ('ADMIN'),
 ('MEMBRE'),
 ('TRESORIER');
-
 
 /*==============================================================*/
 /* TONTINE                                                      */
@@ -59,7 +56,6 @@ CREATE TABLE TONTINE (
    POLITIQUE_TONTINE TEXT,
    CODE_ACCES VARCHAR(20)
 );
-
 
 /*==============================================================*/
 /* MEMBRE                                                       */
@@ -84,16 +80,19 @@ CREATE TABLE MEMBRE (
    CONSTRAINT UNIQUE_MEMBRE UNIQUE (USERID, ID_TONTINE)
 );
 
-
 /*==============================================================*/
 /* COTISATION                                                   */
 /*==============================================================*/
 CREATE TABLE COTISATION (
    ID_COTISATION SERIAL PRIMARY KEY,
-   MONTANT BIGINT NOT NULL,
-   STATUT_COTISATION VARCHAR(15)
-);
+   ID_MEMBRE INT NOT NULL,
+   MONTANT_TOTAL BIGINT NOT NULL,
+   STATUT_COTISATION VARCHAR(15) DEFAULT 'EN_ATTENTE',
+   DATE_COTISATION DATE DEFAULT CURRENT_DATE,
 
+   CONSTRAINT FK_COTISATION_MEMBRE FOREIGN KEY (ID_MEMBRE)
+      REFERENCES MEMBRE(ID_MEMBRE)
+);
 
 /*==============================================================*/
 /* CYCLE                                                        */
@@ -108,7 +107,6 @@ CREATE TABLE CYCLE (
    CONSTRAINT FK_CYCLE_TONTINE FOREIGN KEY (ID_TONTINE)
       REFERENCES TONTINE(ID_TONTINE)
 );
-
 
 /*==============================================================*/
 /* TOUR                                                         */
@@ -126,7 +124,6 @@ CREATE TABLE TOUR (
    CONSTRAINT FK_TOUR_BENEFICIAIRE FOREIGN KEY (ID_BENEFICIAIRE)
       REFERENCES MEMBRE(ID_MEMBRE)
 );
-
 
 /*==============================================================*/
 /* ORDRE DE PASSAGE                                             */
@@ -147,29 +144,21 @@ CREATE TABLE ORDRE_PASSAGE (
    CONSTRAINT UNIQUE_MEMBRE_CYCLE UNIQUE (ID_CYCLE, ID_MEMBRE)
 );
 
-
 /*==============================================================*/
 /* PAIEMENT                                                     */
 /*==============================================================*/
 CREATE TABLE PAIEMENT (
    ID_PAIEMENT SERIAL PRIMARY KEY,
-   ID_MEMBRE INT NOT NULL,
    ID_COTISATION INT NOT NULL,
-   ID_TOUR INT,
-   DATE_COTISATION DATE,
+   MONTANT BIGINT NOT NULL,
+   DATE_PAIEMENT DATE DEFAULT CURRENT_DATE,
    MODE_PAIEMENT VARCHAR(20),
    REFERENCE VARCHAR(100),
-
-   CONSTRAINT FK_PAIEMENT_MEMBRE FOREIGN KEY (ID_MEMBRE)
-      REFERENCES MEMBRE(ID_MEMBRE),
+   VALIDE BOOLEAN DEFAULT FALSE,
 
    CONSTRAINT FK_PAIEMENT_COTISATION FOREIGN KEY (ID_COTISATION)
-      REFERENCES COTISATION(ID_COTISATION),
-
-   CONSTRAINT FK_PAIEMENT_TOUR FOREIGN KEY (ID_TOUR)
-      REFERENCES TOUR(ID_TOUR)
+      REFERENCES COTISATION(ID_COTISATION)
 );
-
 
 /*==============================================================*/
 /* PENALITE                                                     */
@@ -190,7 +179,6 @@ CREATE TABLE PENALITE (
       REFERENCES TOUR(ID_TOUR)
 );
 
-
 /*==============================================================*/
 /* INVITATION                                                   */
 /*==============================================================*/
@@ -206,7 +194,6 @@ CREATE TABLE INVITATION (
    CONSTRAINT FK_INVITATION_MEMBRE FOREIGN KEY (ID_MEMBRE)
       REFERENCES MEMBRE(ID_MEMBRE)
 );
-
 
 /*==============================================================*/
 /* NOTIFICATION                                                 */
