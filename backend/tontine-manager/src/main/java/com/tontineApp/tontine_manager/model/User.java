@@ -4,8 +4,8 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -28,4 +28,14 @@ public class User {
     @Column(name="statut_compte")
     private String statutCompte;
     private String ville;
+
+    @ManyToMany
+    @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
+    private List<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Membre> members;
+
+
+
 }

@@ -15,13 +15,16 @@ public class Paiement {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id_paiement")
     private Integer id;
-    @Column(name="id_cotisation")
-    private  Integer idCotisation;
     private Integer montant;
     @Column(name="date_paiement")
-    private Date dateCotisation;
+    private Date datePaiement;
     @Column(name="mode_paiement")
     private String  modePaiement;
     private String reference;
     private Boolean valide;
+
+
+    @ManyToOne
+    @JoinColumn(name="id_cotisation")
+    private Cotisation cotisation;
 }

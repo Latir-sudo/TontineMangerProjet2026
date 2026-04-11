@@ -19,6 +19,7 @@ public class Role {
     @Column(name="nom_role")
     private String nomRole;
 
-    @OneToMany(mappedBy = "role")
-    private List<Membre> membre;
+    @Column(name="description_role")
+    private String description;
+
 }
