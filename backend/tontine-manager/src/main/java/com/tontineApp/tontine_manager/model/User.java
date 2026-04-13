@@ -4,6 +4,7 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -17,14 +18,14 @@ public class User {
     @Column(name="userid")
     private Integer id;
 
-    @Column(name="prenom_utilisateur")
-    private String prenomUtilisateur;
+    private String nom;
+    private String prenom;
     private String email;
     private String telephone;
     @Column(name="userpassword")
     private String userPassword;
     @Column(name="date_inscription")
-    private Date dateInscription;
+    private LocalDate dateInscription;
     @Column(name="statut_compte")
     private String statutCompte;
     private String ville;

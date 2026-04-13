@@ -25,6 +25,6 @@ public class Paiement {
 
 
     @ManyToOne
-    @JoinColumn(name="id_cotisation")
+    @JoinColumn(name="cotisation_id")
     private Cotisation cotisation;
 }

@@ -4,6 +4,7 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Invitation {
     @Column(name="description_invitation")
     private String DescriptionInvitation;
     @Column(name="date_invitation")
-    private Date dateInvitation;
+    private LocalDate dateInvitation;
     @Column(name="statut_invitation")
     private String StatutInvitation;
 

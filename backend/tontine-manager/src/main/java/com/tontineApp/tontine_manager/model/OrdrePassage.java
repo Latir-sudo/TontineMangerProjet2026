@@ -20,6 +20,6 @@ public class OrdrePassage {
     private Cycle cycle;
 
     @ManyToOne
-    @JoinColumn(name="id_membre")
+    @JoinColumn(name="membre_id")
     private Membre membre;
 }

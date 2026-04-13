@@ -4,6 +4,7 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -20,7 +21,7 @@ public class Penalite {
     private Integer montantPenalite;
     private String motif;
     @Column(name="date_penalite")
-    private Date datePenalite;
+    private LocalDate datePenalite;
     private String statutPenalite;
 
     @ManyToOne
