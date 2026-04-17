@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 public class TontineService {
 
@@ -59,10 +60,29 @@ public class TontineService {
     }
 
 
+    @Transactional
     public TontineRequest update(TontineRequest tontineRequest,Integer id){
+        if(tontineRequest==null){
+            throw new IllegalArgumentException("tontine null");
+        }
+        TontineRequest newtontine = TontineMapper.toTontineRequest(tontineRepository.findById(id).orElseThrow(()->new RessourceNotFoundException("tontine pas trouve")));
+        if(tontineRequest.getNomTontine() !=null && !tontineRequest.getNomTontine().isBlank()){
+            newtontine.setNomTontine(tontineRequest.getNomTontine());
+        }
+        if(tontineRequest.getFrequence()!=null && !tontineRequest.getFrequence().isBlank()){
+            newtontine.setFrequence(tontineRequest.getFrequence());
+        }
+        if(tontineRequest.getDescriptionTontine()!=null && !tontineRequest.getDescriptionTontine().isBlank()){
+            newtontine.setDescriptionTontine(tontineRequest.getDescriptionTontine());
+        }
+        if (tontineRequest.getMontant()!=null){
+            newtontine.setMontant(tontineRequest.getMontant());
+        }
+        if(tontineRequest.getPolitiqueTontine()!=null && tontineRequest.getPolitiqueTontine().isBlank()){
+            newtontine.setPolitiqueTontine(tontineRequest.getPolitiqueTontine());
+        }
 
-
-
+        return newtontine;
     }
 
 }

@@ -28,6 +28,5 @@ public class Membre {
     @Column(name="preference_notification")
     private String preferenceNotification;
 
-    @OneToMany(mappedBy = "membre")
-    private List<Cotisation> cotisation=new ArrayList<>();
+
 }

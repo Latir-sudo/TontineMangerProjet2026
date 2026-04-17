@@ -33,4 +33,9 @@ public class TontineController {
     public void deleteById(@PathVariable("id") Integer id){
         tontineService.delete(id);
     }
+
+    @PatchMapping("/{id}")
+    public TontineRequest updateTontine(@PathVariable("id") Integer id,@RequestBody TontineRequest tontineRequest){
+        return tontineService.update(tontineRequest,id);
+    }
 }

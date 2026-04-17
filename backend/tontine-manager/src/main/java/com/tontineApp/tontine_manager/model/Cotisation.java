@@ -24,9 +24,6 @@ public class Cotisation {
     private String date;
 
 
-    @OneToMany(mappedBy = "cotisation")
-    private List<Paiement> paiements=new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name="membre_id")
     private Membre membre;

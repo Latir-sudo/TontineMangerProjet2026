@@ -38,8 +38,9 @@ public class Tontine {
     @Column(name="code_acces")
     private String codeAcces;
 
-    @OneToMany(mappedBy = "tontine")
-    private List<Cycle> cycles;
+
+
+
 
 
 }

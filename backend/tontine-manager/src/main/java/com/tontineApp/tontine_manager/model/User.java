@@ -48,6 +48,4 @@ public class User {
         role.getUsers().remove(this);
     }
 
-
-
 }
