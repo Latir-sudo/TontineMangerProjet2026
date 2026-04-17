@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,5 +29,5 @@ public class Membre {
     private String preferenceNotification;
 
     @OneToMany(mappedBy = "membre")
-    private List<Cotisation> cotisation;
+    private List<Cotisation> cotisation=new ArrayList<>();
 }

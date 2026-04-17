@@ -1,24 +1,30 @@
 package com.tontineApp.tontine_manager.dto;
+import jakarta.validation.constraints.*;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+@AllArgsConstructor
 
+public class UserRequest {
+    @NotBlank
     private String prenom;
+    @NotBlank
     private String nom;
+    @Email
     private String email;
+    @NotBlank
     private String telephone;
+    @Size(min=8)
+    private String UserPassword;
     private LocalDate dateInscription;
-
-    private List<String> roles;
-
-
+    @NotBlank
+    private String ville;
 }

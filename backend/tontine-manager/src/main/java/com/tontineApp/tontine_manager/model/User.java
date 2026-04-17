@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +32,21 @@ public class User {
     private String ville;
 
     @ManyToMany
-    @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
-    private List<Role> roles;
+    @JoinTable(name = "users_roles" ,joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
+    private List<Role> roles=new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Membre> members;
+    private List<Membre> members=new  ArrayList<>();
+
+    public void addRole(Role role){
+        roles.add(role);
+        role.getUsers().add(this);
+    }
+
+    public void removeRole(Role role){
+        roles.remove(role);
+        role.getUsers().remove(this);
+    }
 
 
 

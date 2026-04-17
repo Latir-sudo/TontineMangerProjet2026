@@ -4,6 +4,8 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class Tontine {
     private Integer montant;
     private String frequence;
     @Column(name="date_de_creation")
-    private Date dateCreation;
+    private LocalDate dateCreation;
 
     @Column(name="statut_tontine")
     private String statutTontine;
@@ -38,9 +40,6 @@ public class Tontine {
 
     @OneToMany(mappedBy = "tontine")
     private List<Cycle> cycles;
-
-    @OneToMany (mappedBy = "tontine")
-    private List<Membre> membres;
 
 
 }

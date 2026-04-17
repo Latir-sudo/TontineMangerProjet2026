@@ -3,6 +3,7 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,7 +25,7 @@ public class Cotisation {
 
 
     @OneToMany(mappedBy = "cotisation")
-    private List<Paiement> paiements;
+    private List<Paiement> paiements=new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="membre_id")

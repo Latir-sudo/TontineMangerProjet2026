@@ -4,6 +4,7 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,5 +22,8 @@ public class Role {
 
     @Column(name="description_role")
     private String description;
+
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users=new ArrayList<>();
 
 }
