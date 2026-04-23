@@ -28,20 +28,11 @@ public class MembreService {
 
         // 2. Trouver ou créer l'utilisateur
         User user;
-        if (request.getTelephone() != null && !request.getTelephone().isEmpty()) {
+
             // Recherche par téléphone
             user = userRepository.findByTelephone(request.getTelephone())
                     .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec ce numéro"));
-        } else {
-            // Créer nouvel utilisateur
-            user = new User();
-            user.setNom(request.getNom());
-            user.setPrenom(request.getPrenom());
-            user.setTelephone(request.getTelephone());
-            user.setDateInscription(LocalDateTime.now().toLocalDate());
-            user.setStatutCompte("ACTIF");
-            user = userRepository.save(user);
-        }
+
 
         // 3. Vérifier qu'il n'est pas déjà membre
         boolean dejaMembre = membreRepository.existsByTontineAndUser(tontine, user);
@@ -57,8 +48,7 @@ public class MembreService {
         membre = membreRepository.save(membre);
 
         // 5. Notification
-        System.out.println(" Notification envoyée à " + user.getTelephone() +
-                " : Vous avez été ajouté à la tontine " + tontine.getNomTontine());
+
 
         return membre;
     }
