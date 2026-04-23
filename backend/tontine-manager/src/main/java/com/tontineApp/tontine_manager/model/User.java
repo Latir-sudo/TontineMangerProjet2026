@@ -1,6 +1,7 @@
 package com.tontineApp.tontine_manager.model;
 
 
+import com.tontineApp.tontine_manager.enumeration.StatutAdhesion;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,8 +36,7 @@ public class User {
     @JoinTable(name = "users_roles" ,joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Role> roles=new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Membre> members=new  ArrayList<>();
+
 
     public void addRole(Role role){
         roles.add(role);

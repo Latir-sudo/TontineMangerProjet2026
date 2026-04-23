@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ATTENTE;
+
 @Service
 public class UserService {
 
@@ -25,17 +27,6 @@ public class UserService {
     public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-    }
-
-    public List<UserResponse> findByNom(String nom) {
-        return userRepository.findByNom(nom).stream()
-                .map(UserMapping::mapToUserResponse)
-                .toList();
-    }
-    public List<UserResponse> findByPrenom(String prenom) {
-        return userRepository.findByPrenom(prenom).stream()
-                .map(UserMapping::mapToUserResponse)
-                .toList();
     }
 
     public UserResponse getById(Integer id) {
@@ -51,22 +42,25 @@ public class UserService {
     // ajout d'utilisateur
 
     @Transactional
-    public UserResponse saveUser(UserRequest userRequest, List<String> rolenames) {
+    public UserResponse saveUser(UserRequest userRequest) {
 
-        if(rolenames==null||rolenames.isEmpty()){
-            throw new IllegalArgumentException("le role doit etre défini");
+        if(userRepository.findByTelephone(userRequest.getTelephone()).isPresent()){
+            throw new IllegalArgumentException("le numero existe deja");
         }
+
+        if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
+            throw new IllegalArgumentException("l'email existe deja");
+        }
+
         User user = UserMapping.mapUserRequestToUser(userRequest);
 
-        for (String rolename : rolenames) {
-            Role role = roleRepository.findByNomRole(rolename).
-                    orElseGet(() -> {
-                        Role newrole = new Role();
-                        newrole.setNomRole(rolename);
-                        return roleRepository.save(newrole);
-                    });
+        for (Role rolename :userRequest.getRoles()) {
+
+            Role role = roleRepository.findByNomRole(rolename.getNomRole()).
+                    orElseThrow(()-> new RessourceNotFoundException("Role not found"));
 
             user.addRole(role);
+            user.setStatutCompte("attente");
         }
         return UserMapping.mapToUserResponse(userRepository.save(user));
     }

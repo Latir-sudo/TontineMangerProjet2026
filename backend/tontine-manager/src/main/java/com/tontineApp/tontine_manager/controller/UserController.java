@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-@Validated
 public class UserController {
 
     private final UserService userService;
@@ -21,7 +20,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/")
+    @GetMapping("/listusers")
     public List<UserResponse> getUsers() {
         return userService.getAllUsers();
     }
@@ -29,9 +28,10 @@ public class UserController {
     public UserResponse getUser(@PathVariable("id") int id) {
         return userService.getById(id);
     }
-    @PostMapping("/")
+    @PostMapping("/save")
     public UserResponse saveUser(@Valid @RequestBody UserRequest userRequest) {
-         return userService.saveUser(userRequest,List.of("USER"));
+        System.out.println("bonjour");
+         return userService.saveUser(userRequest);
     }
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Integer id){

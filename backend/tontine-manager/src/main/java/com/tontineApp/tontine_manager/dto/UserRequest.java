@@ -1,4 +1,5 @@
 package com.tontineApp.tontine_manager.dto;
+import com.tontineApp.tontine_manager.model.Role;
 import jakarta.validation.constraints.*;
 
 
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,4 +29,5 @@ public class UserRequest {
     private LocalDate dateInscription;
     @NotBlank
     private String ville;
+    List<Role> roles;
 }

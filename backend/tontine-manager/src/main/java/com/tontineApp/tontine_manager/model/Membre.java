@@ -4,9 +4,8 @@ package com.tontineApp.tontine_manager.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+
 
 @Data
 @Entity
@@ -19,11 +18,13 @@ public class Membre {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name="user_id")
     private User user;
     @ManyToOne
+    @JoinColumn(name="tontine_id")
     private Tontine tontine;
 
-    private LocalDateTime dateAdhesion;
+    private LocalDate dateAdhesion;
 
     @Column(name="preference_notification")
     private String preferenceNotification;

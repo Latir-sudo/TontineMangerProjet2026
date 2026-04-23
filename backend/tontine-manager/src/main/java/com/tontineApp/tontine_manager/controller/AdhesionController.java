@@ -16,7 +16,7 @@ public class AdhesionController {
         this.adhesionService = adhesionService;
     }
 
-    @GetMapping("/attente")
+    @GetMapping("/attentes")
     public List<AdhesionResponse> getAttenteAdhesion(@PathVariable("idtontine") Integer id) {
         return adhesionService.getAdhesionAttente(id);
     }
