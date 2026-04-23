@@ -7,6 +7,8 @@ import com.tontineApp.tontine_manager.repository.TontineRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 
 @Component
 public class MembreMapper {
@@ -21,15 +23,15 @@ public class MembreMapper {
         MembreRequest membreRequest = new MembreRequest();
         membreRequest.setIdUser(membre.getUser().getId());
         membreRequest.setIdTontine(membre.getTontine().getId());
-        membreRequest.setPreferenceNotification(membre.getPreferenceNotification());
 
         return membreRequest;
     }
 
     public Membre toMembre(MembreRequest membreRequest) {
         Membre membre = new Membre();
-        membre.setDateAdhesion(membreRequest.getDateAdhesion());
-        membre.setPreferenceNotification(membreRequest.getPreferenceNotification());
+        membre.setUser(userRepository.findById(membreRequest.getIdUser()).orElseThrow(()->new RessourceNotFoundException("Membre not found")));
+        membre.setTontine(tontineRepository.findById(membreRequest.getIdTontine()).orElseThrow(()->new RessourceNotFoundException("Tontine not found")));
+        membre.setDateAdhesion(LocalDate.now());
 
         return membre;
     }

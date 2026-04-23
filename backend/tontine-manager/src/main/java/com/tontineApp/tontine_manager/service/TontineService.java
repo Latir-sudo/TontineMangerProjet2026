@@ -59,7 +59,6 @@ public class TontineService {
         tontineRepository.deleteById(id);
     }
 
-
     @Transactional
     public TontineRequest update(TontineRequest tontineRequest,Integer id){
         if(tontineRequest==null){
