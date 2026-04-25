@@ -7,9 +7,10 @@ import com.tontineApp.tontine_manager.model.User;
 import org.springframework.stereotype.Component;
 
 
+@Component
 public class UserMapping {
 
-    public static UserResponse mapToUserResponse(User user) {
+    public UserResponse mapToUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setNom(user.getNom());
         userResponse.setPrenom(user.getPrenom());
@@ -25,7 +26,7 @@ public class UserMapping {
 
         return userResponse;
     }
-    public static User mapUserRequestToUser(UserRequest userRequest) {
+    public User mapUserRequestToUser(UserRequest userRequest) {
         User user = new User();
         user.setNom(userRequest.getNom());
         user.setPrenom(userRequest.getPrenom());

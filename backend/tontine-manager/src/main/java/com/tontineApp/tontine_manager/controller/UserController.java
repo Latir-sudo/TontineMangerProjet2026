@@ -5,6 +5,7 @@ import com.tontineApp.tontine_manager.dto.UserResponse;
 import com.tontineApp.tontine_manager.model.User;
 import com.tontineApp.tontine_manager.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-    @GetMapping("/listusers")
+    @GetMapping
     public List<UserResponse> getUsers() {
         return userService.getAllUsers();
     }
@@ -28,9 +26,13 @@ public class UserController {
     public UserResponse getUser(@PathVariable("id") int id) {
         return userService.getById(id);
     }
-    @PostMapping("/save")
-    public UserResponse saveUser(@Valid @RequestBody UserRequest userRequest) {
-        System.out.println("bonjour");
+
+    @GetMapping("/search")
+    public UserResponse getUserByTelephone(@RequestParam String telephone){
+        return userService.getUserByTelephone(telephone);
+    }
+    @PostMapping
+    public UserResponse saveUser(@RequestBody UserRequest userRequest) {
          return userService.saveUser(userRequest);
     }
     @DeleteMapping("/{id}")
@@ -39,7 +41,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserResponse updateUser(@PathVariable("id") int id, @Valid @RequestBody UserRequest userRequest) {
+    public UserResponse updateUser(@PathVariable("id") Integer id, @RequestBody UserRequest userRequest) {
         return userService.updateUser(userRequest,id);
     }
 }

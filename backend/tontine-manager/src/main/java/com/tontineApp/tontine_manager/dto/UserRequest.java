@@ -16,18 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 
 public class UserRequest {
-    @NotBlank
+
     private String prenom;
-    @NotBlank
     private String nom;
-    @Email
     private String email;
-    @NotBlank
     private String telephone;
-    @Size(min=8)
     private String UserPassword;
     private LocalDate dateInscription;
-    @NotBlank
     private String ville;
     List<Role> roles;
 }

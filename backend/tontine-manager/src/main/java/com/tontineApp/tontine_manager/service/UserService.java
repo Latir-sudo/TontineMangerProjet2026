@@ -10,6 +10,7 @@ import com.tontineApp.tontine_manager.model.User;
 import com.tontineApp.tontine_manager.repository.RoleRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,26 +18,26 @@ import java.util.List;
 import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ATTENTE;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
-
     // récupération utilisateurs
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-    }
+    private final UserMapping userMapping;
 
     public UserResponse getById(Integer id) {
-        return UserMapping.mapToUserResponse(userRepository.findById(id).orElseThrow(()-> new RessourceNotFoundException("User not found")));
+        return userMapping.mapToUserResponse(userRepository.findById(id).orElseThrow(()-> new RessourceNotFoundException("User not found")));
 
     }
     public List<UserResponse> getAllUsers(){
         return userRepository.findAll().stream()
-                .map(UserMapping::mapToUserResponse)
+                .map(userMapping::mapToUserResponse)
                 .toList();
+    }
+
+    public UserResponse getUserByTelephone(String telephone){
+        return userMapping.mapToUserResponse(userRepository.findByTelephone(telephone).orElseThrow(()-> new RessourceNotFoundException("ce numéro ne correspond à aucun user")));
     }
 
     // ajout d'utilisateur
@@ -52,7 +53,7 @@ public class UserService {
             throw new IllegalArgumentException("l'email existe deja");
         }
 
-        User user = UserMapping.mapUserRequestToUser(userRequest);
+        User user = userMapping.mapUserRequestToUser(userRequest);
 
         for (Role rolename :userRequest.getRoles()) {
 
@@ -62,7 +63,7 @@ public class UserService {
             user.addRole(role);
             user.setStatutCompte("attente");
         }
-        return UserMapping.mapToUserResponse(userRepository.save(user));
+        return userMapping.mapToUserResponse(userRepository.save(user));
     }
 
     public void deleteUser(Integer id) {
@@ -88,7 +89,7 @@ public class UserService {
         if(newuser.getTelephone()!=null  && !newuser.getTelephone().isBlank())
             user.setTelephone(newuser.getTelephone());
 
-        return UserMapping.mapToUserResponse(userRepository.save(user));
+        return userMapping.mapToUserResponse(userRepository.save(user));
 
     }
 

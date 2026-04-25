@@ -2,57 +2,57 @@ package com.tontineApp.tontine_manager.service;
 
 
 import com.tontineApp.tontine_manager.dto.TontineRequest;
+import com.tontineApp.tontine_manager.dto.TontineResponse;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.mapper.TontineMapper;
 import com.tontineApp.tontine_manager.model.Tontine;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 @Service
+@AllArgsConstructor
 public class TontineService {
 
     private final TontineRepository tontineRepository;
-    public TontineService(TontineRepository tontineRepository) {
-        this.tontineRepository = tontineRepository;
-    }
+    private final TontineMapper tontineMapper;
 
     public List<TontineRequest> getAllTontine(){
         return tontineRepository.findAll().stream()
-                .map(TontineMapper::toTontineRequest)
+                .map(tontineMapper::toTontineRequest)
                 .toList();
     }
 
-    public List<TontineRequest> getTontineByNom(String nomTontine){
+    public List<TontineResponse> getTontineByNom(String nomTontine){
         return tontineRepository.findByNomTontine(nomTontine).stream()
-                .map(TontineMapper::toTontineRequest)
+                .map(tontineMapper::toTontineResponse)
                 .toList();
     }
-    public List<TontineRequest> getTontineByMontant(Integer montant){
+    public List<TontineResponse> getTontineByMontant(Integer montant){
         return tontineRepository.findByMontant(montant).stream()
-                .map(TontineMapper::toTontineRequest)
+                .map(tontineMapper::toTontineResponse)
                 .toList();
     }
 
-    public List<TontineRequest> getTontineByFrequence(String frequence){
+    public List<TontineResponse> getTontineByFrequence(String frequence){
         return tontineRepository.findByFrequence(frequence).stream()
-                .map(TontineMapper::toTontineRequest)
+                .map(tontineMapper::toTontineResponse)
                 .toList();
     }
 
-    public TontineRequest getTontineById(Integer id){
-        return TontineMapper.toTontineRequest(tontineRepository.findById(id).
+    public TontineResponse getTontineById(Integer id){
+        return tontineMapper.toTontineResponse(tontineRepository.findById(id).
                 orElseThrow(()-> new RessourceNotFoundException("tontine non trouvé")));
     }
 
     @Transactional
-    public TontineRequest save(TontineRequest tontineRequest){
-       Tontine tontine = TontineMapper.toTontine(tontineRequest);
-       tontineRepository.save(tontine);
-       return tontineRequest;
+    public TontineResponse save(TontineRequest tontineRequest){
+       Tontine tontine = tontineMapper.toTontine(tontineRequest);
+       return tontineMapper.toTontineResponse(tontineRepository.save(tontine));
     }
 
     public void delete (Integer id){
@@ -60,11 +60,11 @@ public class TontineService {
     }
 
     @Transactional
-    public TontineRequest update(TontineRequest tontineRequest,Integer id){
+    public TontineResponse update(TontineRequest tontineRequest,Integer id){
         if(tontineRequest==null){
             throw new IllegalArgumentException("tontine null");
         }
-        TontineRequest newtontine = TontineMapper.toTontineRequest(tontineRepository.findById(id).orElseThrow(()->new RessourceNotFoundException("tontine pas trouve")));
+        Tontine newtontine = tontineRepository.findById(id).orElseThrow(()->new RessourceNotFoundException("tontine pas trouve"));
         if(tontineRequest.getNomTontine() !=null && !tontineRequest.getNomTontine().isBlank()){
             newtontine.setNomTontine(tontineRequest.getNomTontine());
         }
@@ -77,11 +77,11 @@ public class TontineService {
         if (tontineRequest.getMontant()!=null){
             newtontine.setMontant(tontineRequest.getMontant());
         }
-        if(tontineRequest.getPolitiqueTontine()!=null && tontineRequest.getPolitiqueTontine().isBlank()){
+        if(tontineRequest.getPolitiqueTontine()!=null && !tontineRequest.getPolitiqueTontine().isBlank()){
             newtontine.setPolitiqueTontine(tontineRequest.getPolitiqueTontine());
         }
 
-        return newtontine;
+        return tontineMapper.toTontineResponse(tontineRepository.save(newtontine));
     }
 
 }

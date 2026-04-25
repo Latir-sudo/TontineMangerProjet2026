@@ -12,7 +12,7 @@ public class AdhesionMapper {
         adhesionResponse.setPrenomUser(adhesion.getUser().getPrenom());
         adhesionResponse.setNomUser(adhesion.getUser().getNom());
         adhesionResponse.setTelephoneUser(adhesion.getUser().getTelephone());
-        adhesionResponse.setStatut(adhesionResponse.getStatut());
+        adhesionResponse.setStatut(adhesion.getStatut());
 
         return adhesionResponse;
     }
