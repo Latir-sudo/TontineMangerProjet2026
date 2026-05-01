@@ -1,12 +1,9 @@
 package com.tontineApp.tontine_manager.controller;
 
-import com.tontineApp.tontine_manager.dto.AdhesionResponse;
-import com.tontineApp.tontine_manager.dto.TontineRequest;
-import com.tontineApp.tontine_manager.dto.TontineResponse;
-import com.tontineApp.tontine_manager.dto.UpdateStatusDto;
+import com.tontineApp.tontine_manager.dto.*;
 import com.tontineApp.tontine_manager.service.AdhesionService;
+import com.tontineApp.tontine_manager.service.TontineFilterService;
 import com.tontineApp.tontine_manager.service.TontineService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,42 +16,44 @@ public class TontineController {
 
     private final TontineService tontineService;
     private final AdhesionService adhesionService;
+    private final TontineFilterService tontineFilterService;
 
-    @PostMapping
-    public TontineResponse createTontine(@RequestBody TontineRequest tontineRequest){
-        return tontineService.save(tontineRequest);
-    }
     @GetMapping
-    public List<TontineRequest> getAllTontine(){
-        return tontineService.getAllTontine();
+    public List<TontineResponse> getTontines(){
+        return tontineService.getAllTontines();
     }
     @GetMapping("/{id}")
-    public TontineResponse getTontine(@PathVariable("id") Integer id){
-        return tontineService.getTontineById(id);
+    public TontineResponse getTontine(@PathVariable("id") Integer idTontine){
+        return tontineService.getById(idTontine);
     }
-
     @GetMapping("/search")
-    public List<TontineResponse> getTontineByMontant(@RequestParam Integer montant){
-        return tontineService.getTontineByMontant(montant);
+    public List<TontineResponse> getByRegion(TontineFilter tontineFilter){
+        return tontineFilterService.TontineFilters(tontineFilter);
     }
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Integer id){
-        tontineService.delete(id);
+    @PostMapping
+    public TontineResponse save(@RequestBody TontineRequest tontineRequest){
+        return tontineService.save(tontineRequest);
     }
-
-    @PatchMapping("/{id}")
-    public TontineResponse updateTontine(@PathVariable("id") Integer id,@RequestBody TontineRequest tontineRequest){
+    @PatchMapping("{id}")
+    public TontineResponse update (@RequestBody TontineRequest tontineRequest,@PathVariable("id") Integer id){
         return tontineService.update(tontineRequest,id);
     }
-
-    @GetMapping("/{id}/adhesion/attentes")
-    public List<AdhesionResponse> getAttenteAdhesion(@PathVariable("id") Integer id) {
-        return adhesionService.getAdhesionAttente(id);
+    @DeleteMapping("/{id}")
+    public void delete (Integer id){
+         tontineService.delete(id);
+    }
+    @GetMapping("/adhesion")
+    public List<AdhesionResponse> getAttenteAdhesion(@RequestParam Integer idTontine) {
+        return adhesionService.getAdhesionAttente(idTontine);
     }
 
-    @PatchMapping ("/{idtontine}/adhesion/{idUser}")
-    public AdhesionResponse traiterAdhesion(@PathVariable("idUser") Integer idUser, @PathVariable("idtontine") Integer idTontine, @RequestBody UpdateStatusDto nouveau){
-        System.out.println("démarage du controller pour l'adhesion");
+    @PostMapping("/adhesion")
+    public AdhesionResponse save(@RequestBody AdhesionRequest adhesionRequest){
+        return adhesionService.save(adhesionRequest);
+    }
+    @PatchMapping ("/adhesion")
+    public AdhesionResponse traiterAdhesion(@RequestParam Integer idUser, @RequestParam Integer idTontine, @RequestBody UpdateStatusDto nouveau){
         return adhesionService.traiterAdhesion(idUser,nouveau,idTontine);
     }
+
 }

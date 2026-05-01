@@ -15,6 +15,8 @@ public class TontineMapper {
         response.setMontant(tontine.getMontant());
         response.setFrequence(tontine.getFrequence());
         response.setDateCreation(tontine.getDateCreation());
+        response.setRegion(tontine.getRegionTontine());
+        response.setCategorie(tontine.getCategorieTontine());
 
         return response;
     }
@@ -27,6 +29,9 @@ public class TontineMapper {
         tontine.setFrequence(tontineRequest.getFrequence());
         tontine.setDateCreation(tontineRequest.getDateCreation());
         tontine.setNomTontine(tontineRequest.getNomTontine());
+        tontine.setMontant(tontineRequest.getMontant());
+        tontine.setCategorieTontine(tontineRequest.getCategorie());
+        tontine.setRegionTontine(tontineRequest.getRegion());
         return tontine;
     }
 

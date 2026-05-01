@@ -23,7 +23,6 @@ public class Paiement {
     private String reference;
     private Boolean valide;
 
-
     @ManyToOne
     @JoinColumn(name="cotisation_id")
     private Cotisation cotisation;

@@ -1,5 +1,6 @@
 package com.tontineApp.tontine_manager.model;
 
+import com.tontineApp.tontine_manager.enumeration.StatutCotisation;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,12 +18,9 @@ public class Cotisation {
     @Column(name="id_cotisation")
     private Integer id;
     @Column(name="montant_total")
-    private Double montantTotal;
+    private Integer montant;
     @Column(name="statut_cotisation")
-    private String statut;
-    @Column(name="date_cotisation")
-    private String date;
-
+    private StatutCotisation statut;
 
     @ManyToOne
     @JoinColumn(name="membre_id")

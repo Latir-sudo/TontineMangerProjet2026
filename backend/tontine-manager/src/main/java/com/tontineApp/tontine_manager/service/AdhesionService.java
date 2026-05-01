@@ -1,5 +1,6 @@
 package com.tontineApp.tontine_manager.service;
 
+import com.tontineApp.tontine_manager.dto.AdhesionRequest;
 import com.tontineApp.tontine_manager.dto.AdhesionResponse;
 import com.tontineApp.tontine_manager.dto.MembreRequest;
 import com.tontineApp.tontine_manager.dto.UpdateStatusDto;
@@ -28,12 +29,13 @@ public class AdhesionService {
     private final TontineRepository tontineRepository;
     private final MembreMapper membreMapper;
     private final MembreRepository membreRepository;
+    private final AdhesionMapper adhesionMapper;
     public List<AdhesionResponse> getAdhesionAttente(Integer idTontine){
         if(!tontineRepository.existsById(idTontine)){
             throw new RessourceNotFoundException("Tontine non trouvé");
         }
         return adhesionRepository.findAllByStatutAndTontine_Id(ATTENTE,idTontine).stream().
-                map(AdhesionMapper::toAdhesionResponse)
+                map(adhesionMapper::toAdhesionResponse)
                 .toList();
     }
     @Transactional
@@ -55,8 +57,15 @@ public class AdhesionService {
             membreRequest.setIdUser(idUser);
             membreRepository.save(membreMapper.toMembre(membreRequest));
         }
+        return adhesionMapper.toAdhesionResponse(adhesionRepository.save(adhesion));
 
-        return AdhesionMapper.toAdhesionResponse(adhesionRepository.save(adhesion));
+    }
 
+    public AdhesionResponse save(AdhesionRequest adhesionRequest){
+        if(adhesionRequest==null)
+            throw new IllegalArgumentException("adhesion null");
+
+        Adhesion adhesion = adhesionMapper.toAdhesion(adhesionRequest);
+        return adhesionMapper.toAdhesionResponse(adhesionRepository.save(adhesion));
     }
 }

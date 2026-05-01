@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,6 +26,10 @@ public class Invitation {
     private LocalDate dateInvitation;
     @Column(name="statut_invitation")
     private String StatutInvitation;
+
+    @ManyToOne
+    @JoinColumn(name="tontine_id")
+    private Tontine tontine;
 
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="invitation_id"))

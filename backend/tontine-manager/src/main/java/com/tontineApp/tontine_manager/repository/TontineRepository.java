@@ -10,9 +10,11 @@ import java.util.List;
 
 @Repository
 public interface TontineRepository extends JpaRepository<Tontine,Integer> {
+    List<Tontine> findByDateCreation(LocalDate dateCreation);
+    List<Tontine> findByRegionTontine(String region);
+    List<Tontine> findByCategorieTontine(String categorie);
+    List<Tontine> findByMontant(Integer montant);
+    List<Tontine> findByFrequence(String frequence);
 
-    public List<Tontine> findByDateCreation(LocalDate dateCreation);
-    public List<Tontine> findByFrequence(String frequence);
-    public List<Tontine> findByMontant(Integer montant);
-    public List<Tontine> findByNomTontine(String nomTontine);
+
 }

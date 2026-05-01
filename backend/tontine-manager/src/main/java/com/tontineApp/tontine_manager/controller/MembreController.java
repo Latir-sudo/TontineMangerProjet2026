@@ -22,7 +22,6 @@ public class MembreController {
     @PostMapping
     public ResponseEntity<?> ajouterUtilisateurATontine(@RequestBody MembreRequest request) {
         try {
-            System.out.println("bonjour");
             MembreRequest nouveauMembre = membreService.ajouterUtilisateurATontine(request);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Utilisateur "+ nouveauMembre.getIdUser()+" ajouté avec succès à la tontine");

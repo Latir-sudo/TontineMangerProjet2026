@@ -38,9 +38,7 @@ public class Tontine {
     @Column(name="code_acces")
     private String codeAcces;
 
-
-
-
-
+    private String regionTontine;
+    private String categorieTontine;
 
 }

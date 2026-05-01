@@ -55,9 +55,9 @@ public class UserService {
 
         User user = userMapping.mapUserRequestToUser(userRequest);
 
-        for (Role rolename :userRequest.getRoles()) {
+        for (String rolename :userRequest.getRoles()) {
 
-            Role role = roleRepository.findByNomRole(rolename.getNomRole()).
+            Role role = roleRepository.findByNomRole(rolename).
                     orElseThrow(()-> new RessourceNotFoundException("Role not found"));
 
             user.addRole(role);

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -17,4 +17,6 @@ public class TontineRequest {
     private LocalDate dateCreation;
     private String descriptionTontine;
     private String politiqueTontine;
+    private String categorie;
+    private String region;
 }
