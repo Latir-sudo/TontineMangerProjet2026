@@ -6,7 +6,7 @@ import com.tontineApp.tontine_manager.dto.AdhesionResponse;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.model.Adhesion;
 import com.tontineApp.tontine_manager.model.Tontine;
-import com.tontineApp.tontine_manager.model.User;
+import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,7 @@ public class AdhesionMapper {
 
     public Adhesion toAdhesion(AdhesionRequest adhesionRequest){
         Adhesion adhesion = new Adhesion();
-        User user = userRepository.findById(adhesionRequest.getIdUser()).orElseThrow(()->new RessourceNotFoundException("user not found"));
+        Users user = userRepository.findById(adhesionRequest.getIdUser()).orElseThrow(()->new RessourceNotFoundException("user not found"));
         Tontine tontine = tontineRepository.findById(adhesionRequest.getIdTontine()).orElseThrow(()->new RessourceNotFoundException("tontine not found"));
        adhesion.setUser(user);
        adhesion.setTontine(tontine);

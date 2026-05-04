@@ -6,7 +6,7 @@ import com.tontineApp.tontine_manager.dto.UserResponse;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.mapper.UserMapping;
 import com.tontineApp.tontine_manager.model.Role;
-import com.tontineApp.tontine_manager.model.User;
+import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.RoleRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -53,7 +53,7 @@ public class UserService {
             throw new IllegalArgumentException("l'email existe deja");
         }
 
-        User user = userMapping.mapUserRequestToUser(userRequest);
+        Users user = userMapping.mapUserRequestToUser(userRequest);
 
         for (String rolename :userRequest.getRoles()) {
 
@@ -77,7 +77,7 @@ public class UserService {
             throw new IllegalArgumentException("objet vide");
 
         }
-        User user= userRepository.findById(id).orElseThrow(()-> new RessourceNotFoundException("User not found"));
+        Users user= userRepository.findById(id).orElseThrow(()-> new RessourceNotFoundException("User not found"));
         if(newuser.getNom()!=null && !newuser.getNom().isBlank())
             user.setNom(newuser.getNom());
         if(newuser.getPrenom()!=null && !newuser.getPrenom().isBlank())

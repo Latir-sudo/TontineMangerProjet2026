@@ -5,7 +5,7 @@ import com.tontineApp.tontine_manager.dto.MembreRequest;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.mapper.MembreMapper;
 import com.tontineApp.tontine_manager.model.Membre;
-import com.tontineApp.tontine_manager.model.User;
+import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.model.Tontine;
 import com.tontineApp.tontine_manager.repository.MembreRepository;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
@@ -32,7 +32,7 @@ public class MembreService {
         Tontine tontine = tontineRepository.findById(request.getIdTontine()).orElseThrow(()->new RessourceNotFoundException("tontine non trouvée"));
 
             // Recherche par téléphone
-        User  user = userRepository.findById(request.getIdUser())
+        Users  user = userRepository.findById(request.getIdUser())
                     .orElseThrow(() -> new RessourceNotFoundException("Utilisateur non trouvé avec ce numéro"));
 
         // 3. Vérifier qu'il n'est pas déjà membre

@@ -10,7 +10,7 @@ import com.tontineApp.tontine_manager.mapper.AdhesionMapper;
 import com.tontineApp.tontine_manager.mapper.MembreMapper;
 import com.tontineApp.tontine_manager.model.Adhesion;
 import com.tontineApp.tontine_manager.model.Tontine;
-import com.tontineApp.tontine_manager.model.User;
+import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

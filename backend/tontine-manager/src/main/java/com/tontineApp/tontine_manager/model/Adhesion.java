@@ -17,7 +17,7 @@ public class Adhesion {
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User user;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name="tontine_id")

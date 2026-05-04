@@ -33,5 +33,5 @@ public class Invitation {
 
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name="user_id"),inverseJoinColumns = @JoinColumn(name="invitation_id"))
-    private List<User> users=new ArrayList<>();
+    private List<Users> users=new ArrayList<>();
 }

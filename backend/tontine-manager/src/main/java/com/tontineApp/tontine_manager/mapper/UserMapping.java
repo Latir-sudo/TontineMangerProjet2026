@@ -3,14 +3,14 @@ package com.tontineApp.tontine_manager.mapper;
 import com.tontineApp.tontine_manager.dto.UserRequest;
 import com.tontineApp.tontine_manager.dto.UserResponse;
 import com.tontineApp.tontine_manager.model.Role;
-import com.tontineApp.tontine_manager.model.User;
+import com.tontineApp.tontine_manager.model.Users;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class UserMapping {
 
-    public UserResponse mapToUserResponse(User user) {
+    public UserResponse mapToUserResponse(Users user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setNom(user.getNom());
         userResponse.setPrenom(user.getPrenom());
@@ -26,8 +26,8 @@ public class UserMapping {
 
         return userResponse;
     }
-    public User mapUserRequestToUser(UserRequest userRequest) {
-        User user = new User();
+    public Users mapUserRequestToUser(UserRequest userRequest) {
+        Users user = new Users();
         user.setNom(userRequest.getNom());
         user.setPrenom(userRequest.getPrenom());
         user.setEmail(userRequest.getEmail());

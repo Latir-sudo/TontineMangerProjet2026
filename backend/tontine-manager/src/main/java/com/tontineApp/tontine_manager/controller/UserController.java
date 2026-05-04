@@ -2,11 +2,9 @@ package com.tontineApp.tontine_manager.controller;
 
 import com.tontineApp.tontine_manager.dto.UserRequest;
 import com.tontineApp.tontine_manager.dto.UserResponse;
-import com.tontineApp.tontine_manager.model.User;
 import com.tontineApp.tontine_manager.service.UserService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+
 import org.springframework.web.bind.annotation.*;
 
 
