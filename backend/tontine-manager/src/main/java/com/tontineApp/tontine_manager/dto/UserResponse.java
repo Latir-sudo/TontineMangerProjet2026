@@ -11,13 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
-
+    private Integer id;
     private String prenom;
     private String nom;
     private String email;
     private String telephone;
     private LocalDate dateInscription;
-
+    private String ville;
     private List<String> roles;
 
 

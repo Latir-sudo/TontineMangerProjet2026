@@ -21,7 +21,7 @@ public class UserRequest {
     private String nom;
     private String email;
     private String telephone;
-    private String UserPassword;
+    private String password;
     private LocalDate dateInscription;
     private String ville;
     List<String> roles;

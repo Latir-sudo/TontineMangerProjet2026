@@ -83,8 +83,8 @@ public class UserService {
             user.setNom(newuser.getNom());
         if(newuser.getPrenom()!=null && !newuser.getPrenom().isBlank())
             user.setPrenom(newuser.getPrenom());
-        if(newuser.getUserPassword()!=null && !newuser.getUserPassword().isBlank())
-            user.setUserPassword(newuser.getUserPassword());
+        if(newuser.getPassword()!=null && !newuser.getPassword().isBlank())
+            user.setUserPassword(newuser.getPassword());
         if(newuser.getEmail()!=null && !newuser.getEmail().isBlank())
             user.setEmail(newuser.getEmail());
         if(newuser.getTelephone()!=null  && !newuser.getTelephone().isBlank())
@@ -93,5 +93,14 @@ public class UserService {
         return userMapping.mapToUserResponse(userRepository.save(user));
 
     }
+
+    public boolean existsByEmail(String email){
+        return  userRepository.existsByEmail(email);
+    }
+
+    public UserResponse getUserByEmail(String email){
+        return userMapping.mapToUserResponse(userRepository.findByEmail(email).orElseThrow(()-> new RessourceNotFoundException("User not found")));
+    }
+
 
 }

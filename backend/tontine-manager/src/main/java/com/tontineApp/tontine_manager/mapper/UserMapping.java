@@ -17,6 +17,7 @@ public class UserMapping {
         userResponse.setEmail(user.getEmail());
         userResponse.setTelephone(user.getTelephone());
         userResponse.setDateInscription(user.getDateInscription());
+        userResponse.setVille(user.getVille());
 
         userResponse.setRoles(
                 user.getRoles().stream()
@@ -32,7 +33,7 @@ public class UserMapping {
         user.setPrenom(userRequest.getPrenom());
         user.setEmail(userRequest.getEmail());
         user.setDateInscription(userRequest.getDateInscription());
-        user.setUserPassword(userRequest.getUserPassword());
+        user.setUserPassword(userRequest.getPassword());
         user.setVille(userRequest.getVille());
         user.setTelephone(userRequest.getTelephone());
         return user;

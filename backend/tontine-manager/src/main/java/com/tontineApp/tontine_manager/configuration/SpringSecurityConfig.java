@@ -1,28 +1,26 @@
 package com.tontineApp.tontine_manager.configuration;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.tontineApp.tontine_manager.service.CustomUserDetailService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.crypto.spec.SecretKeySpec;
+import java.util.List;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -31,17 +29,14 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    private String jwtkey = "JEPgVbobKMbB6RBqkAeeQ43xykgbxULovhI9wW9cVRS";
-
-
+    private final UserDetailsService userDetailsService;
     private final CustomUserDetailService customUserDetailService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer((oauth2)->oauth2.jwt(Customizer.withDefaults()))
-                // API REST stateless
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)// API REST stateless
 
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -57,13 +52,19 @@ public class SpringSecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/users").permitAll()
                                 .anyRequest().authenticated()
-
                 )
 // Branchement de handler
 
         .build();
     }
 
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
     @Bean
     public BCryptPasswordEncoder passwordEncoder (){
         return new BCryptPasswordEncoder();
@@ -73,18 +74,19 @@ public class SpringSecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    // méthode permettant de décoder un token jwt
     @Bean
-    public JwtDecoder jwtDecoder(){
-        SecretKeySpec secretkey = new SecretKeySpec(this.jwtkey.getBytes(),0,this.jwtkey.getBytes().length,"RSA");
-        return NimbusJwtDecoder.withSecretKey(secretkey).macAlgorithm(MacAlgorithm.HS256).build();
-    }
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-    @Bean
-    public JwtEncoder jwtEncoder(){
-        return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtkey.getBytes()));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
-
 
 
 
