@@ -11,6 +11,7 @@ import com.tontineApp.tontine_manager.repository.RoleRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapping userMapping;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserResponse getById(Integer id) {
         return userMapping.mapToUserResponse(userRepository.findById(id).orElseThrow(()-> new RessourceNotFoundException("User not found")));
@@ -39,8 +41,6 @@ public class UserService {
     public UserResponse getUserByTelephone(String telephone){
         return userMapping.mapToUserResponse(userRepository.findByTelephone(telephone).orElseThrow(()-> new RessourceNotFoundException("ce numéro ne correspond à aucun user")));
     }
-
-    // ajout d'utilisateur
 
     @Transactional
     public UserResponse saveUser(UserRequest userRequest) {
@@ -63,6 +63,7 @@ public class UserService {
             user.addRole(role);
             user.setStatutCompte("attente");
         }
+        user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
         return userMapping.mapToUserResponse(userRepository.save(user));
     }
 

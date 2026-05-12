@@ -1,7 +1,8 @@
 package com.tontineApp.tontine_manager.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.tontineApp.tontine_manager.dto.LoginRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
@@ -15,4 +16,11 @@ public class LoginController {
     public String getAdmin(){
         return "Bonjour , admin!";
     }
+
+    @GetMapping("/")
+    public String getHome(){
+        return "Bonjour , home!";
+    }
+
+
 }
