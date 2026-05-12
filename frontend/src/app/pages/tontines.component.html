@@ -1,0 +1,44 @@
+<div class="page-shell list-shell">
+  <header class="list-header">
+    <button class="back-link" routerLink="/">← Retour</button>
+    <div>
+      <span class="brand-pill">Tontines disponibles</span>
+      <h1>Liste des tontines</h1>
+      <p>Recherchez et découvrez des tontines adaptées à vos besoins.</p>
+    </div>
+  </header>
+
+  <section class="search-panel">
+    <input type="search" placeholder="Rechercher une tontine..." />
+    <button class="outline-button" type="button" (click)="toggleFilters()">Filtres</button>
+  </section>
+
+  <div *ngIf="showFilters" class="filter-bar">
+    <button
+      type="button"
+      class="secondary-button"
+      *ngFor="let filter of filters"
+      [class.active]="selectedFilter === filter"
+      (click)="setFilter(filter)">
+      {{ filter }}
+    </button>
+  </div>
+
+  <div class="tontine-cards">
+    <article *ngFor="let tontine of visibleTontines" class="tontine-card">
+      <div class="card-top">
+        <div>
+          <p class="tontine-type">{{ tontine.type }}</p>
+          <h2>{{ tontine.title }}</h2>
+        </div>
+        <span class="tontine-amount">{{ tontine.amount }}</span>
+      </div>
+      <div class="card-meta">
+        <span>{{ tontine.location }}</span>
+        <span>{{ tontine.members }} membres</span>
+        <span>Début {{ tontine.start }}</span>
+      </div>
+      <button class="primary-button" type="button" (click)="openDetail()">Voir les détails</button>
+    </article>
+  </div>
+</div>

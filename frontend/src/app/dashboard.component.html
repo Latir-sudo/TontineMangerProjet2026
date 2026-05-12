@@ -1,0 +1,71 @@
+<div class="page-shell">
+  <header class="topbar">
+    <button class="menu-button" aria-label="Ouvrir le menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="topbar-title">
+      <p>Accueil</p>
+    </div>
+  </header>
+
+  <section class="hero-card">
+    <div class="hero-copy">
+      <p class="hero-pretitle">Bonjour, Amadou</p>
+      <h1>Gérez vos tontines facilement</h1>
+    </div>
+    <div class="hero-statuses">
+      <article class="status-card">
+        <span class="status-label">Total cotisé</span>
+        <strong>245 000 F</strong>
+      </article>
+      <article class="status-card secondary">
+        <span class="status-label">Mes tontines</span>
+        <strong>2</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-card">
+    <div class="section-header">
+      <p class="section-label">Mes tontines</p>
+      <button class="outline-button" routerLink="/available-tontines">+ Rejoindre</button>
+    </div>
+
+    <div class="tontine-list">
+      <article class="tontine-item">
+        <div class="tontine-item-main">
+          <div>
+            <h2>Tontine Famille</h2>
+            <p>12 membres</p>
+          </div>
+          <span class="tontine-amount">4 000 FCFA</span>
+        </div>
+        <p class="tontine-meta">Prochain paiement dans 3 jours</p>
+      </article>
+      <article class="tontine-item">
+        <div class="tontine-item-main">
+          <div>
+            <h2>Epargne Quartier</h2>
+            <p>20 membres</p>
+          </div>
+          <span class="tontine-amount">10 000 FCFA</span>
+        </div>
+        <p class="tontine-meta">Prochain paiement dans 1 jour</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-card quick-actions">
+    <p class="section-label">Actions rapides</p>
+    <div class="actions-grid">
+      <a class="action-button" routerLink="/create">Créer tontine</a>
+      <a class="action-button" routerLink="/available-tontines">Tontines disponibles</a>
+      <a class="action-button" routerLink="/tontines">Mes tontines</a>
+      <a class="action-button" routerLink="/notifications">Notifications</a>
+      <a class="action-button" routerLink="/history">Historique</a>
+      <a class="action-button" routerLink="/profile">Profil</a>
+    </div>
+  </section>
+</div>

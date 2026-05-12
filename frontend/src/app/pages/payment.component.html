@@ -1,0 +1,40 @@
+<div class="page-shell payment-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/payment-preview">← Retour</button>
+    <div>
+      <span class="brand-pill">Paiement</span>
+      <h1>Payer ma cotisation</h1>
+      <p>Choisissez un mode de paiement sécurisé.</p>
+    </div>
+  </header>
+
+  <section class="payment-card">
+    <div class="summary-card">
+      <p class="summary-label">Montant de la cotisation</p>
+      <strong>{{ payment.amount | number:'1.0-0' }} FCFA</strong>
+    </div>
+
+    <div class="payment-alert">
+      <p>Votre cotisation pour le tour #3 est attendue avant le 15 mai 2026.</p>
+      <span>4 jours restants</span>
+    </div>
+
+    <div class="method-list">
+      <label class="payment-option">
+        <input type="radio" name="method" value="wave" [(ngModel)]="payment.method" />
+        <span>Wave</span>
+      </label>
+      <label class="payment-option">
+        <input type="radio" name="method" value="orange" [(ngModel)]="payment.method" />
+        <span>Orange Money</span>
+      </label>
+    </div>
+
+    <label>
+      <span>Numéro Téléphone</span>
+      <input type="tel" placeholder="7754365435" [(ngModel)]="payment.phone" name="phone" required />
+    </label>
+
+    <button class="primary-button" type="button" (click)="pay()">Payer</button>
+  </section>
+</div>

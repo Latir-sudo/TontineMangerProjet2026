@@ -1,0 +1,22 @@
+<div class="page-shell notification-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/">← Retour</button>
+    <div>
+      <span class="brand-pill">Notifications</span>
+      <h1>Notifications</h1>
+      <p>Suivez les événements importants de vos tontines.</p>
+    </div>
+    <button class="action-link" type="button" (click)="markAllRead()">Tout marquer comme lu</button>
+  </header>
+
+  <div class="notification-list">
+    <article *ngFor="let notification of notifications" class="notification-card" [class.read]="notification.read">
+      <div class="notification-dot" [style.background]="notification.color"></div>
+      <div>
+        <strong>{{ notification.title }}</strong>
+        <p>{{ notification.message }}</p>
+      </div>
+      <span>{{ notification.time }}</span>
+    </article>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="page-shell create-shell">
+  <section class="create-card">
+    <div class="create-header">
+      <a routerLink="/" class="back-link">← Retour</a>
+      <h1>Créer une tontine</h1>
+      <p>Remplissez les informations pour créer votre tontine</p>
+    </div>
+
+    <form class="create-form" (ngSubmit)="create()">
+      <label>
+        <span>Nom de la tontine *</span>
+        <input
+          type="text"
+          placeholder="Ex. Épargne solidaire"
+          [(ngModel)]="form.name"
+          name="name"
+          required
+        />
+      </label>
+
+      <label>
+        <span>Catégorie *</span>
+        <select [(ngModel)]="form.category" name="category" required>
+          <option value="" disabled>Sélectionnez une catégorie</option>
+          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Localité *</span>
+        <select [(ngModel)]="form.location" name="location" required>
+          <option value="Dakar">Dakar</option>
+          <option value="Saint-Louis">Saint-Louis</option>
+          <option value="Thies">Thiès</option>
+          <option value="Kaolack">Kaolack</option>
+        </select>
+      </label>
+
+      <div class="grid-two">
+        <label>
+          <span>Montant *</span>
+          <div class="field-addon">
+            <input
+              type="number"
+              [(ngModel)]="form.amount"
+              name="amount"
+              min="1000"
+              required
+            />
+            <span>FCFA</span>
+          </div>
+        </label>
+
+        <label>
+          <span>Fréquence *</span>
+          <select [(ngModel)]="form.frequency" name="frequency" required>
+            <option value="" disabled>Choisir</option>
+            <option *ngFor="let frequency of frequencies" [value]="frequency">{{ frequency }}</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        <span>Max membres *</span>
+        <input
+          type="number"
+          [(ngModel)]="form.maxMembers"
+          name="maxMembers"
+          min="2"
+          required
+        />
+      </label>
+
+      <button class="primary-button" type="submit">Créer tontine</button>
+    </form>
+  </section>
+</div>

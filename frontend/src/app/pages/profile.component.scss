@@ -1,0 +1,143 @@
+:host { 
+  display: block; 
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.page-shell {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  background: #ffffff;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: #0052cc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #003d82;
+  }
+}
+
+.profile-card { 
+  display: grid; 
+  gap: 1.25rem; 
+  background: linear-gradient(135deg, #f0f7ff 0%, #f5f0ff 100%);
+  border: 2px solid #0052cc;
+  border-radius: 2rem; 
+  padding: 1.75rem;
+  box-shadow: 0 8px 24px rgba(0, 82, 204, 0.1);
+}
+
+.profile-main { 
+  display: flex; 
+  gap: 1rem; 
+  align-items: center; 
+}
+
+.avatar { 
+  width: 4rem; 
+  height: 4rem; 
+  display: grid; 
+  place-items: center; 
+  border-radius: 1rem; 
+  background: linear-gradient(135deg, #0052cc, #003d82);
+  color: #fff; 
+  font-weight: 700; 
+  font-size: 1.4rem; 
+}
+
+.profile-main strong { 
+  display: block; 
+  font-size: 1.2rem;
+  color: #1a1a1a;
+}
+
+.profile-main span { 
+  color: rgba(26, 26, 26, 0.72); 
+}
+
+.profile-main p { 
+  margin: 0.35rem 0 0; 
+  color: #4cab50; 
+}
+
+.info-grid { 
+  display: grid; 
+  gap: 0.9rem; 
+}
+
+.info-item { 
+  display: grid; 
+  gap: 0.25rem; 
+  padding: 1rem; 
+  border-radius: 1.5rem; 
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #0052cc;
+    box-shadow: 0 4px 12px rgba(0, 82, 204, 0.1);
+  }
+}
+
+.info-item strong { 
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.info-item span { 
+  color: rgba(26, 26, 26, 0.72); 
+}
+
+.settings-card { 
+  display: grid; 
+  gap: 0.8rem; 
+}
+
+.settings-card button { 
+  border: 2px solid #e0e0e0;
+  background: #ffffff; 
+  color: #1a1a1a; 
+  padding: 1rem; 
+  border-radius: 1.3rem; 
+  text-align: left; 
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #0052cc;
+    box-shadow: 0 4px 12px rgba(0, 82, 204, 0.1);
+  }
+}
+
+.secondary-button { 
+  border: 2px solid #ff8f4c;
+  background: #ff8f4c; 
+  color: #ffffff; 
+  padding: 1rem; 
+  border-radius: 1.4rem; 
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 141, 76, 0.2);
+
+  &:hover {
+    background: #ff7d3d;
+    border-color: #ff7d3d;
+    box-shadow: 0 8px 20px rgba(255, 141, 76, 0.3);
+  }
+}

@@ -1,0 +1,35 @@
+<div class="page-shell auth-shell">
+  <section class="signup-card">
+    <div class="card-header">
+      <span class="brand-pill">Créer un compte</span>
+      <h1>Rejoignez notre communauté</h1>
+      <p>Créez un compte pour gérer facilement vos tontines.</p>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="register()">
+      <label>
+        <span>Nom complet</span>
+        <input type="text" placeholder="Nom complet" [(ngModel)]="form.name" name="name" required />
+      </label>
+
+      <label>
+        <span>Localité</span>
+        <input type="text" placeholder="Localité" [(ngModel)]="form.location" name="location" required />
+      </label>
+
+      <label>
+        <span>Email</span>
+        <input type="email" placeholder="Adresse email" [(ngModel)]="form.email" name="email" required />
+      </label>
+
+      <label>
+        <span>Mot de passe</span>
+        <input type="password" placeholder="********" [(ngModel)]="form.password" name="password" required minlength="8" />
+      </label>
+
+      <button class="primary-button" type="submit">S'inscrire</button>
+    </form>
+
+    <p class="auth-footer">Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+  </section>
+</div>

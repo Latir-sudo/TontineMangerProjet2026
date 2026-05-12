@@ -1,0 +1,38 @@
+<div class="page-shell history-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/">← Retour</button>
+    <div>
+      <span class="brand-pill">Historique cotisation</span>
+      <h1>Historique des cotisations</h1>
+      <p>Suivez les paiements réussis et les cotisations en attente.</p>
+    </div>
+  </header>
+
+  <section class="history-summary">
+    <strong>20 000 FCFA</strong>
+    <span>3 paiements réussis</span>
+  </section>
+
+  <div class="history-tabs">
+    <button [class.active]="filter === 'all'" (click)="filter = 'all'">Tous</button>
+    <button [class.active]="filter === 'success'" (click)="filter = 'success'">Réussis</button>
+    <button [class.active]="filter === 'failed'" (click)="filter = 'failed'">Échoué</button>
+  </div>
+
+  <div class="history-list">
+    <article *ngFor="let payment of payments" class="history-card" [hidden]="filter === 'success' && payment.status !== 'Réussi' || filter === 'failed' && payment.status !== 'Échoué'">
+      <div>
+        <strong>{{ payment.title }}</strong>
+        <span>{{ payment.method }}</span>
+      </div>
+      <div class="history-right">
+        <strong>{{ payment.amount }}</strong>
+        <span>{{ payment.status }}</span>
+      </div>
+      <div class="history-meta">
+        <span>{{ payment.date }}</span>
+        <small>{{ payment.reference }}</small>
+      </div>
+    </article>
+  </div>
+</div>

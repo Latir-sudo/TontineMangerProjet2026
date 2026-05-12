@@ -1,0 +1,44 @@
+<div class="page-shell admin-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/">← Retour</button>
+    <div>
+      <span class="brand-pill">Administration</span>
+      <h1>Administration</h1>
+      <p>Gérez les adhésions et les paiements de votre tontine.</p>
+    </div>
+  </header>
+
+  <section class="admin-card">
+    <div class="admin-stats">
+      <div><strong>15</strong><span>membres actifs</span></div>
+      <div><strong>2</strong><span>Demandes</span></div>
+      <div><strong>3</strong><span>En attente</span></div>
+      <div><strong>12</strong><span>payés</span></div>
+    </div>
+
+    <div class="request-list">
+      <article *ngFor="let request of requests; let i = index">
+        <div>
+          <strong>{{ request.name }}</strong>
+          <span>{{ request.phone }}</span>
+          <small>{{ request.date }}</small>
+        </div>
+        <div class="actions">
+          <button type="button" class="primary-button" (click)="acceptRequest(i)">Accepter</button>
+          <button type="button" class="secondary-button" (click)="rejectRequest(i)">Refuser</button>
+        </div>
+        <span class="request-status">{{ getRequestLabel(request.status) }}</span>
+      </article>
+    </div>
+
+    <div class="validation-list">
+      <article *ngFor="let validation of validations">
+        <div>
+          <strong>{{ validation.name }}</strong>
+          <span>{{ validation.amount }}</span>
+        </div>
+        <button class="primary-button" type="button" (click)="validate()">Valider le paiement</button>
+      </article>
+    </div>
+  </section>
+</div>

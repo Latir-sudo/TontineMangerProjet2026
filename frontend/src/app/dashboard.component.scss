@@ -1,0 +1,251 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
+  padding: 1.25rem;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.page-shell {
+  width: min(100%, 1100px);
+  margin: 0 auto;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.menu-button {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.04);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.menu-button span {
+  display: block;
+  width: 1.2rem;
+  height: 0.14rem;
+  background: #1a1a1a;
+  border-radius: 999px;
+}
+
+.topbar-title p {
+  margin: 0;
+  color: rgba(26, 26, 26, 0.88);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.hero-card {
+  padding: 1.5rem;
+  border-radius: 2rem;
+  background: linear-gradient(135deg, #0052cc 0%, #003d82 100%);
+  border: none;
+  display: grid;
+  gap: 1.5rem;
+  color: #ffffff;
+}
+
+.hero-pretitle {
+  margin: 0 0 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+}
+
+.hero-card h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.hero-statuses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.status-card {
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  border: 2px solid #0052cc;
+  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.1);
+}
+
+.status-card.secondary {
+  background: #ffffff;
+  border: 2px solid #ff8f4c;
+  box-shadow: 0 4px 12px rgba(255, 141, 76, 0.1);
+}
+
+.status-label {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: rgba(26, 26, 26, 0.72);
+  font-size: 0.95rem;
+}
+
+.status-card strong {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+}
+
+.section-card {
+  padding: 1.25rem;
+  border-radius: 1.75rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.section-label {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.outline-button {
+  border: 2px solid #ff8f4c;
+  background: #ff8f4c;
+  color: #ffffff;
+  padding: 0.85rem 1.15rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 141, 76, 0.2);
+}
+
+.outline-button:hover {
+  background: #ff7d3d;
+  border-color: #ff7d3d;
+  box-shadow: 0 6px 16px rgba(255, 141, 76, 0.3);
+}
+
+.tontine-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.tontine-item {
+  padding: 1rem 1rem 0.95rem 1rem;
+  border-radius: 1.5rem;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.tontine-item-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tontine-item h2 {
+  margin: 0 0 0.35rem 0;
+  font-size: 1.05rem;
+  color: #1a1a1a;
+}
+
+.tontine-item p {
+  margin: 0;
+  color: rgba(26, 26, 26, 0.72);
+  font-size: 0.95rem;
+}
+
+.tontine-amount {
+  font-weight: 700;
+  color: #ff8f4c;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.tontine-meta {
+  margin: 0;
+  color: rgba(26, 26, 26, 0.6);
+  font-size: 0.92rem;
+}
+
+.quick-actions .actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.action-button {
+  border: 2px solid #0052cc;
+  background: #0052cc;
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 1.4rem;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 4.2rem;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 82, 204, 0.15);
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  background: #003d82;
+  border-color: #003d82;
+  box-shadow: 0 8px 20px rgba(0, 82, 204, 0.25);
+}
+
+@media (max-width: 720px) {
+  :host {
+    padding: 1rem;
+  }
+
+  .page-shell {
+    gap: 1rem;
+  }
+
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .hero-card,
+  .section-card {
+    padding: 1.15rem;
+  }
+
+  .hero-statuses,
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+}

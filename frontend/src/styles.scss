@@ -1,1 +1,208 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: light;
+  --bg-start: #ffffff;
+  --bg-mid: #f8f9fa;
+  --bg-end: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(0, 0, 0, 0.08);
+  --text-main: #1a1a1a;
+  --text-muted: rgba(26, 26, 26, 0.72);
+  --text-soft: rgba(26, 26, 26, 0.58);
+  --primary: #ff8f4c;
+  --primary-strong: #ff7d3d;
+  --primary-soft: rgba(255, 141, 76, 0.12);
+  --secondary: #0052cc;
+  --secondary-light: #0066ff;
+  --secondary-dark: #003d82;
+  --secondary-soft: rgba(0, 82, 204, 0.12);
+  --surface: rgba(0, 0, 0, 0.04);
+  --surface-strong: rgba(0, 0, 0, 0.08);
+  --border: rgba(0, 0, 0, 0.12);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #ffffff;
+  color: var(--text-main);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea,
+a {
+  font: inherit;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.page-shell {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.card,
+.auth-card,
+.hero-card,
+.section-card,
+.preview-card,
+.payment-card,
+.profile-card,
+.admin-card,
+.history-card,
+.notification-card,
+.create-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+.page-header,
+.section-header,
+.profile-header,
+.list-header,
+.auth-header,
+.topbar,
+.admin-stats,
+.history-tabs,
+.payment-alert,
+.history-summary,
+.request-list,
+.notification-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.95rem 1.3rem;
+  border-radius: 1.15rem;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--primary), #ff914f);
+  color: #081620;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 18px 40px rgba(255, 141, 76, 0.2);
+}
+
+.secondary-button,
+.action-button,
+.outline-button,
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  border-radius: 1.15rem;
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.secondary-button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+
+.secondary-button:hover,
+.outline-button:hover,
+.action-button:hover,
+.back-link:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.outline-button {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: var(--text-main);
+}
+
+.back-link {
+  width: fit-content;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.secondary-button.active {
+  border-color: rgba(255, 141, 76, 0.5);
+  background: rgba(255, 141, 76, 0.18);
+  color: #fff;
+}
+
+.notification-card.read {
+  opacity: 0.72;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    padding: 1rem 0.75rem 1.5rem;
+  }
+}
+
