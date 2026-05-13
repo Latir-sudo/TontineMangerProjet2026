@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -19,9 +19,10 @@ export class Register {
     email: '',
     telephone: '',
     password: '',
-    role: 'USER' as 'USER' | 'ADMIN',
-    localite: 'DAKAR'
+    ville: 'DAKAR',
+    roles: ['USER']
   };
+  
   errorMessage = '';
   successMessage = '';
   isLoading = false;

@@ -4,9 +4,24 @@ export interface User {
   prenom: string;
   email: string;
   telephone: string;
+  ville: string;
+  roles: string[];
+  dateInscription?: string;
+}
+
+export interface UserRequest {
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
   password: string;
-  role: 'USER' | 'ADMIN';
-  statut: 'VERIFIE' | 'NON_VERIFIE';
-  localite: string;
-  dateInscription: string;
+  ville: string;
+  roles: string[];
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  token: string;
+  // ⚠️ PAS DE 'user' ici !
 }
