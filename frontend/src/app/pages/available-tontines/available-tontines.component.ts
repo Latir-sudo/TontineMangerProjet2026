@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 interface Tontine {
@@ -23,7 +23,7 @@ interface Tontine {
 @Component({
   selector: 'app-available-tontines',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './available-tontines.component.html',
   styleUrls: ['./available-tontines.component.scss']
 })
@@ -222,14 +222,22 @@ export class AvailableTontinesComponent implements OnInit {
   }
 
   private loadJoinedTontines() {
-    const saved = localStorage.getItem('joinedTontines');
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+
+    const saved = window.localStorage.getItem('joinedTontines');
     if (saved) {
       this.joinedTontines = JSON.parse(saved);
     }
   }
 
   private saveTontinesLocally() {
-    localStorage.setItem('joinedTontines', JSON.stringify(this.joinedTontines));
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+
+    window.localStorage.setItem('joinedTontines', JSON.stringify(this.joinedTontines));
   }
 
   isJoined(id: number): boolean {

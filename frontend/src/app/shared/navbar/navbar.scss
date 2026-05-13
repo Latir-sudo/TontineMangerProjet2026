@@ -1,0 +1,115 @@
+.navbar {
+  width: 100%;
+  background: rgba(3, 34, 79, 0.96);
+  color: #ffffff;
+  box-shadow: 0 24px 70px rgba(0, 33, 81, 0.25);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  backdrop-filter: blur(14px);
+}
+
+.navbar__container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.navbar__brand {
+  font-weight: 800;
+  color: #fff;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.navbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  flex: 1;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #1661ff, #2e90ff);
+  padding: 0.95rem 1.4rem;
+  border-radius: 1.75rem;
+  text-decoration: none;
+  box-shadow: 0 16px 30px rgba(15, 74, 204, 0.18);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 20px 38px rgba(15, 74, 204, 0.2);
+}
+
+.navbar__auth {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.auth-link {
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 1.5rem;
+  background: #ff8f4c;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 14px 30px rgba(255, 143, 76, 0.25);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+}
+
+@media screen and (max-width: 980px) {
+  .navbar__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .navbar__container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar__actions,
+  .navbar__auth {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-btn,
+  .auth-button {
+    width: 100%;
+  }
+}

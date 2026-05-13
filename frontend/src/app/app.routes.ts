@@ -1,21 +1,23 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
-import { LoginComponent } from './login.component';
-import { CreateTontineComponent } from './create-tontine.component';
-import { SignupComponent } from './pages/signup.component';
-import { TontinesComponent } from './pages/tontines.component';
-import { DetailTontineComponent } from './pages/detail-tontine.component';
-import { PaymentPreviewComponent } from './pages/payment-preview.component';
-import { PaymentComponent } from './pages/payment.component';
-import { ValidatePaymentComponent } from './pages/validate-payment.component';
-import { NotificationsComponent } from './pages/notifications.component';
-import { ProfileComponent } from './pages/profile.component';
-import { AdministrationComponent } from './pages/administration.component';
-import { HistoryComponent } from './pages/history.component';
-import { AvailableTontinesComponent } from './pages/available-tontines.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { LoginComponent } from './pages/login/login.component';
+import { CreateTontineComponent } from './pages/create-tontine/create-tontine.component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { TontinesComponent } from './pages/tontines/tontines.component';
+import { DetailTontineComponent } from './pages/detail-tontine/detail-tontine.component';
+import { PaymentPreviewComponent } from './pages/payment-preview/payment-preview.component';
+import { PaymentComponent } from './pages/payment/payment.component';
+import { ValidatePaymentComponent } from './pages/validate-payment/validate-payment.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { AdministrationComponent } from './pages/admin/administration.component';
+import { HistoryComponent } from './pages/history/history.component';
+import { AvailableTontinesComponent } from './pages/available-tontines/available-tontines.component';
+import { BrowseTontinesComponent } from './pages/browse-tontines/browse-tontines.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: DashboardComponent },
+  { path: 'browse', component: BrowseTontinesComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: SignupComponent },
   { path: 'create', component: CreateTontineComponent },

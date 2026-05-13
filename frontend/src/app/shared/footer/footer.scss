@@ -1,0 +1,122 @@
+.footer {
+  width: min(100%, 1100px);
+  margin: 0 auto 1.5rem;
+  padding: 2rem 1.5rem 1.75rem;
+  background: linear-gradient(180deg, #03254f 0%, #052b5f 100%);
+  color: #e8eefb;
+  border-radius: 2rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+}
+
+.footer__inner {
+  display: grid;
+  grid-template-columns: 1.6fr 1.6fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  display: grid;
+  place-items: center;
+  background: #ff8f4c;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.footer__brand h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.footer__brand p {
+  margin: 0;
+  max-width: 420px;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.footer__content {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.footer__contact-card,
+.footer__social-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}
+
+.footer__contact-card h3,
+.footer__social-card h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1.05rem;
+  color: #ffb88b;
+}
+
+.footer__contact-card p {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.7;
+}
+
+.footer__contact-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.footer__contact-card strong {
+  color: #ffffff;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.footer__socials a {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.footer__socials a:hover {
+  background: #ff8f4c;
+  transform: translateY(-2px);
+}
+
+.footer__bottom {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.92rem;
+}
+
+@media screen and (max-width: 860px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+}
