@@ -41,6 +41,7 @@ public class TontineMapper {
         tontineResponse.setFrequence(tontine.getFrequence());
         tontineResponse.setMontant(tontine.getMontant());
         tontineResponse.setNomTontine(tontine.getNomTontine());
+        tontineResponse.setIdAdmin(tontine.getAdmin().getId());
         return tontineResponse;
     }
 }

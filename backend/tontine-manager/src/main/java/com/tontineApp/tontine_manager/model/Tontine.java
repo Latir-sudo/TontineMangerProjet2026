@@ -41,4 +41,7 @@ public class Tontine {
     private String regionTontine;
     private String categorieTontine;
 
+    @ManyToOne
+    private Users admin;
+
 }

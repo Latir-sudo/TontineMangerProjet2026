@@ -33,42 +33,23 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
-            //
-
-            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-
-
-
-           // String token = jwtService.generateToken(authentication);
-
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtService.generateToken(userDetails);
 
-            // Récupérer l'utilisateur complet
-            UserResponse user = userService.getUserByEmail(loginRequest.getEmail());
-
-            AuthResponse response = new AuthResponse(
-                    true,
-                    "Connexion réussie",
-                    token,
-                    user
-            );
-
+            // Token contient déjà l'utilisateur, on ne renvoie que le token
+            AuthResponse response = new AuthResponse(true, "Connexion réussie", token, null);
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            AuthResponse errorResponse = new AuthResponse(
-                    false,
-                    "Email ou mot de passe incorrect",
-                    null,
-                    null
-            );
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(false, "Email ou mot de passe incorrect", null, null));
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody UserRequest userRequest) {
         try {
-            // Vérifier si l'email existe déjà
+            // 1. Vérifier si l'email existe déjà
             if (userService.existsByEmail(userRequest.getEmail())) {
                 AuthResponse errorResponse = new AuthResponse(
                         false,
@@ -79,24 +60,30 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
             }
 
-            // Créer l'utilisateur
+            // 2. Créer l'utilisateur (le mot de passe est encrypté dans le service)
             UserResponse newUser = userService.saveUser(userRequest);
 
-            // Générer le token
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword())
-            );
-            String token = jwtService.generateToken(authentication);
+            // 3. Générer le token AVEC l'utilisateur complet dedans
+            UserDetails userDetails = org.springframework.security.core.userdetails.User
+                    .withUsername(newUser.getEmail())
+                    .password(userRequest.getPassword())
+                    .authorities(newUser.getRoles().toArray(new String[0]))
+                    .build();
 
+            String token = jwtService.generateToken(userDetails);  // Le token contient l'objet user
+
+            // 4. Retourner la réponse (l'utilisateur est optionnel car déjà dans le token)
             AuthResponse response = new AuthResponse(
                     true,
                     "Inscription réussie",
                     token,
-                    newUser
+                    newUser  // Optionnel, Angular peut décoder depuis le token
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
         } catch (Exception e) {
+            e.printStackTrace();
             AuthResponse errorResponse = new AuthResponse(
                     false,
                     "Erreur lors de l'inscription: " + e.getMessage(),

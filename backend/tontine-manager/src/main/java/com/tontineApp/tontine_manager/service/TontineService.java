@@ -6,20 +6,22 @@ import com.tontineApp.tontine_manager.dto.TontineResponse;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.mapper.TontineMapper;
 import com.tontineApp.tontine_manager.model.Tontine;
+import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
+import com.tontineApp.tontine_manager.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TontineService{
     private final TontineRepository tontineRepository;
     private final TontineMapper tontineMapper;
+    private final UserRepository userRepository;
 
-   public TontineService(TontineRepository tontineRepository,TontineMapper tontineMapper){
-       this.tontineRepository=tontineRepository;
-       this.tontineMapper=tontineMapper;
-   }
    public List<TontineResponse> getAllTontines() {
        return tontineRepository.findAll().stream()
                .map(tontineMapper::toTontineResponse)
@@ -39,9 +41,18 @@ public class TontineService{
        return tontineMapper.toTontineResponse(tontineRepository.findById(id).orElseThrow(()->new RessourceNotFoundException("tontine non trouvée")));
    }
 
-   public TontineResponse save (TontineRequest tontineRequest){
-       return tontineMapper.toTontineResponse(tontineRepository.save(tontineMapper.toTontine(tontineRequest)));
-   }
+
+    public TontineResponse save(TontineRequest tontineRequest, String adminEmail) {
+        Users admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new RessourceNotFoundException("Utilisateur non trouvé"));
+
+        Tontine tontine = tontineMapper.toTontine(tontineRequest);
+        tontine.setAdmin(admin);  // ← L'utilisateur connecté devient admin
+        tontine.setDateCreation(LocalDate.now());
+        tontine.setStatutTontine("active");
+
+        return tontineMapper.toTontineResponse(tontineRepository.save(tontine));
+    }
 
    public void delete (Integer id){
         tontineRepository.deleteById(id);

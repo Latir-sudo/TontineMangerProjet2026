@@ -14,4 +14,5 @@ public class TontineResponse {
     private String nomTontine;
     private String frequence;
     private Integer montant;
+    private Integer idAdmin;
 }
