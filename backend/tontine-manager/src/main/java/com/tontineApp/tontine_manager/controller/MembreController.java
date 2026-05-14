@@ -20,7 +20,7 @@ public class MembreController {
 
     // ADMIN DE LA TONTINE : ajouter un membre
     @PostMapping
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(authentication, #request.idTontine)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #request.idTontine)")
     public ResponseEntity<?> ajouterUtilisateurATontine(@RequestBody MembreRequest request, Authentication authentication) {
         try {
             MembreRequest nouveauMembre = membreService.ajouterUtilisateurATontine(request);
@@ -35,4 +35,6 @@ public class MembreController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+
 }

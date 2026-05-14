@@ -79,7 +79,7 @@ public class TontineController {
 
     // ADMIN DE LA TONTINE : traiter une demande d'adhésion
     @PatchMapping("/adhesion")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(authentication, #idTontine)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #idTontine)")
     public AdhesionResponse traiterAdhesion(
             @RequestParam Integer idUser,
             @RequestParam Integer idTontine,
@@ -87,4 +87,15 @@ public class TontineController {
             Authentication authentication) {
         return adhesionService.traiterAdhesion(idUser, nouveau, idTontine);
     }
+
+
+
+    // GET /api/tontine/membre - Récupère les tontines du membre connecté
+    @GetMapping("/mes-tontines")
+    @PreAuthorize("isAuthenticated()")
+    public List<TontineResponse> getMesTontines(Authentication authentication) {
+        String email = authentication.getName();
+        return tontineService.getMesTontines(email);
+    }
+
 }

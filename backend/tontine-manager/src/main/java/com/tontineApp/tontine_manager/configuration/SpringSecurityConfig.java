@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,35 +32,31 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SpringSecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;  // ← Injecté automatiquement
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)// API REST stateless
-
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html",
-                                        "/v3/api-docs/**",
-                                        "/v3/api-docs.yaml",
-                                        "/login"
-                                ).permitAll()
-
-// ── Auth ─────────────────────────────────────────
-                                .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/users").permitAll()
-                                .anyRequest().authenticated()
+                        // Routes publiques (sans authentification)
+                        .requestMatchers(
+                                "/api/auth/**",           // ← IMPORTANT: regroupe login et register
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
+                        ).permitAll()
+                        // Route POST /api/users (inscription) publique
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        // Toutes les autres routes nécessitent authentification
+                        .anyRequest().authenticated()
                 )
-                                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
-// Branchement de handler
-
-        .build();
+                .build();
     }
 
     @Bean
@@ -71,12 +66,14 @@ public class SpringSecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder (){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
@@ -93,7 +90,4 @@ public class SpringSecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
-
 }

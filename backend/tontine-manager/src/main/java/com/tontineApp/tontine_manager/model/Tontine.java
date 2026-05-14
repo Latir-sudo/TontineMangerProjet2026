@@ -40,6 +40,8 @@ public class Tontine {
 
     private String regionTontine;
     private String categorieTontine;
+    private Integer nombreMembres;
+    private Integer nombreMax;
 
     @ManyToOne
     private Users admin;

@@ -11,9 +11,11 @@ import com.tontineApp.tontine_manager.repository.TontineRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,17 @@ public class TontineService{
                .map(tontineMapper::toTontineResponse)
                .toList();
    }
+
+    @Transactional(readOnly = true)
+    public List<TontineResponse> getTontinesByMemberEmail(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // Récupérer les tontines où l'utilisateur est membre
+        return tontineRepository.findTontinesByUserId(user.getId()).stream()
+                .map(tontineMapper::toTontineResponse)
+                .collect(Collectors.toList());
+    }
    public List<TontineResponse> getByCategorie(String categorie){
        return tontineRepository.findByCategorieTontine(categorie).stream()
                .map(tontineMapper::toTontineResponse)
@@ -41,6 +54,20 @@ public class TontineService{
        return tontineMapper.toTontineResponse(tontineRepository.findById(id).orElseThrow(()->new RessourceNotFoundException("tontine non trouvée")));
    }
 
+    @Transactional (readOnly = true)
+    public List<TontineResponse> getTontinesByUserId(Integer userId) {
+        return tontineRepository.findTontinesByUserId(userId).stream()
+                .map(tontineMapper::toTontineResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Alternative avec email
+    @Transactional(readOnly = true)
+    public List<TontineResponse> getMesTontines(String email) {
+        Users user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return getTontinesByUserId(user.getId());
+    }
 
     public TontineResponse save(TontineRequest tontineRequest, String adminEmail) {
         Users admin = userRepository.findByEmail(adminEmail)
@@ -50,6 +77,7 @@ public class TontineService{
         tontine.setAdmin(admin);  // ← L'utilisateur connecté devient admin
         tontine.setDateCreation(LocalDate.now());
         tontine.setStatutTontine("active");
+        tontine.setNombreMembres(0);
 
         return tontineMapper.toTontineResponse(tontineRepository.save(tontine));
     }

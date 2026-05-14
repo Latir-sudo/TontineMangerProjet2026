@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.services';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,23 +12,31 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.scss']
 })
 export class Login {
-  email = '';
-  password = '';
+  credentials = {
+    email: '',
+    password: ''
+  };
   errorMessage = '';
   isLoading = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-  async onSubmit() {
+  async login() {
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     try {
-      const result = await this.authService.login(this.email, this.password);
-      
+      const result = await this.authService.login(
+        this.credentials.email,
+        this.credentials.password
+      );
+
       if (result.success) {
-        const user = this.authService.currentUser();
-        if (user?.role === 'ADMIN') {
+        // Redirection selon le rôle
+        if (this.authService.isAdmin()) {
           this.router.navigate(['/admin/dashboard']);
         } else {
           this.router.navigate(['/dashboard']);

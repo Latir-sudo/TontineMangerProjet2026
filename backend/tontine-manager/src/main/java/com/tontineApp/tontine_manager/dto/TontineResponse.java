@@ -15,4 +15,10 @@ public class TontineResponse {
     private String frequence;
     private Integer montant;
     private Integer idAdmin;
+    private String descriptionTontine;
+    private String categorie;
+    private String region;
+    private String statutTontine;
+    private Integer nombreMembres;
+    private Integer nombreMax;
 }

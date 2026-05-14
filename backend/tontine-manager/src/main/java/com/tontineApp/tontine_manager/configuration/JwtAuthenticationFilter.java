@@ -2,6 +2,9 @@ package com.tontineApp.tontine_manager.configuration;
 
 import com.tontineApp.tontine_manager.service.JwtService;
 import com.tontineApp.tontine_manager.service.CustomUserDetailService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 1. Récupérer l'en-tête Authorization
+        // ⚠️ Ignorer les endpoints d'authentification
+        String path = request.getServletPath();
+        if (path.startsWith("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -39,40 +48,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 2. Extraire le token
         final String token = authHeader.substring(7);
 
         try {
-            // 3. Extraire l'email du token
             final String userEmail = jwtService.extractUsername(token);
+            System.out.println("Token extrait pour: " + userEmail);
 
-            // 4. Vérifier si l'utilisateur n'est pas déjà authentifié
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                // 5. Charger les détails de l'utilisateur
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                // 6. Valider le token
                 if (jwtService.isTokenValid(token, userDetails)) {
-
-                    // 7. Créer l'authentification
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    // 8. Mettre l'authentification dans le contexte
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("Authentification réussie pour: " + userEmail);
+                } else {
+                    System.out.println("Token invalide pour: " + userEmail);
                 }
             }
+        } catch (ExpiredJwtException e) {
+            System.out.println("Token expiré: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token expiré");
+            return;
+        } catch (SignatureException e) {
+            System.out.println("Signature invalide: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Signature token invalide");
+            return;
+        } catch (MalformedJwtException e) {
+            System.out.println("Token malformé: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token malformé");
+            return;
         } catch (Exception e) {
-            // Token invalide ou expiré
-            logger.error("JWT Authentication error: " + e.getMessage());
+            System.out.println("Erreur JWT: " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Erreur d'authentification");
+            return;
         }
 
-        // 9. Continuer la chaîne de filtres
         filterChain.doFilter(request, response);
     }
 }

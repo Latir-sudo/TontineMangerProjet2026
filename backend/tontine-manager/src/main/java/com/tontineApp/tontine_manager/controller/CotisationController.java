@@ -18,20 +18,18 @@ public class CotisationController {
 
     private final CotisationService cotisationService;
 
-    // MEMBRE : voir ses propres cotisations (l'idUser doit être le sien)
     @GetMapping("/user/{id}/tontine/{idTontine}")
-    @PreAuthorize("isAuthenticated() and @cotisationSecurity.isOwner(authentication, #idUser, #idTontine)")
+    @PreAuthorize("isAuthenticated() and @cotisationSecurity.isOwner(#authentication, #id, #idTontine)")
     public ResponseEntity<List<CotisationResponse>> getAllCotisations(
-            @PathVariable("id") Integer idUser,
+            @PathVariable("id") Integer id,
             @PathVariable("idTontine") Integer idTontine,
             Authentication authentication) {
-        List<CotisationResponse> cotisations = cotisationService.getCotisations(idUser, idTontine);
+        List<CotisationResponse> cotisations = cotisationService.getCotisations(id, idTontine);
         return ResponseEntity.ok(cotisations);
     }
 
-    // MEMBRE : créer une cotisation (l'idUser doit être le sien)
     @PostMapping("/user/{id}/tontine/{idTontine}")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isMember(authentication, #idTontine)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isMember(#authentication, #idTontine)")
     public ResponseEntity<CotisationResponse> saveCotisation(
             @RequestBody CotisationRequest cotisationRequest,
             @PathVariable("id") Integer userId,

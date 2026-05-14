@@ -44,6 +44,7 @@ public class MembreService {
 
         // 4. Créer le membre
        Membre membre = membreMapper.toMembre(request);
+        tontine.setNombreMembres(tontine.getNombreMembres()+1);
         return membreMapper.toMembreRequest(membreRepository.save(membre));
 
     }

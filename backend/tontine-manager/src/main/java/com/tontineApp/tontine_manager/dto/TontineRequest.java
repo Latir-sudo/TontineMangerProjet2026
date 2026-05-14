@@ -19,4 +19,5 @@ public class TontineRequest {
     private String politiqueTontine;
     private String categorie;
     private String region;
+    private Integer nombreMax;
 }

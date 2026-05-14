@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.tontineApp.tontine_manager.enumeration.StatutCotisation.COMPLET;
 import static com.tontineApp.tontine_manager.enumeration.StatutCotisation.PARTIEL;
@@ -25,10 +26,15 @@ public class CotisationService {
     private final MembreRepository membreRepository;
     private final CotisationMapper cotisationMapper;
 
-    public List<CotisationResponse> getCotisations(Integer idUser,Integer idTontine){
-        // récupération du membre de la tontine
-        Membre membre = membreRepository.findByTontine_IdAndUser_Id(idTontine,idUser).orElseThrow(()->new RessourceNotFoundException("membre de tontine"+idTontine +" et user "+idUser+" not found"));
+    public List<CotisationResponse> getCotisations(Integer idUser, Integer idTontine) {
+        Optional<Membre> membreOpt = membreRepository.findByTontine_IdAndUser_Id(idTontine, idUser);
 
+        if (membreOpt.isEmpty()) {
+            System.out.println("Aucun membre trouvé pour user=" + idUser + ", tontine=" + idTontine);
+            return List.of();  // ← Retourne liste vide
+        }
+
+        Membre membre = membreOpt.get();
         return cotisationRepository.findByMembre_Id(membre.getId()).stream()
                 .map(cotisationMapper::toCotisationResponse)
                 .toList();

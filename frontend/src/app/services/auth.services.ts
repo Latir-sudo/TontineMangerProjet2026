@@ -1,9 +1,26 @@
+// auth.services.ts - Version corrigée
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { User, AuthResponse, UserRequest } from '../models/user.model';
+
+export interface User {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  ville: string;
+  roles: string[];
+  dateInscription?: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  token: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -12,76 +29,122 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   isLoggedIn = signal(false);
 
+  /**
+   * Retourne true si l'utilisateur est connecté (token valide en localStorage ou signal true)
+   */
+  isLoggedInNow(): boolean {
+    const token = this.getToken();
+    if (token && !this.isTokenExpired(token)) {
+      return true;
+    }
+    return this.isLoggedIn();
+  }
+
   constructor(private http: HttpClient, private router: Router) {
     this.loadStoredData();
   }
 
   private loadStoredData() {
     const token = localStorage.getItem('token');
+    console.log('🔐 AuthService: chargement token depuis localStorage:', !!token);
+    
     if (token && !this.isTokenExpired(token)) {
       const user = this.decodeUserFromToken(token);
-      this.currentUser.set(user);
-      this.isLoggedIn.set(true);
+      if (user && user.id) {
+        this.currentUser.set(user);
+        this.isLoggedIn.set(true);
+        console.log('✅ AuthService: utilisateur rechargé:', user.email, 'ID:', user.id);
+      } else {
+        console.error('❌ AuthService: impossible de décoder l\'utilisateur depuis le token');
+        this.clearAuthData();
+      }
     } else {
-      localStorage.removeItem('token');
+      console.log('⚠️ AuthService: token invalide ou expiré');
+      this.clearAuthData();
     }
   }
 
-  // Décoder l'utilisateur depuis le token JWT
   private decodeUserFromToken(token: string): User | null {
     try {
       const decoded: any = jwtDecode(token);
-      // Ton token a la structure: { sub, user: {...}, iat, exp }
-      const userData = decoded.user;
+      console.log('📦 Token décodé:', decoded);
+      
+      // Vérifiez où se trouvent les données utilisateur dans votre token
+      // Soit dans decoded.user, soit directement dans decoded
+      const userData = decoded.user || decoded;
       
       if (!userData) {
-        console.error('Token ne contient pas de user');
+        console.error('Token ne contient pas de données utilisateur');
         return null;
       }
       
-      return {
+      // S'assurer que l'ID est présent
+      if (!userData.id) {
+        console.error('Token ne contient pas d\'ID utilisateur');
+        return null;
+      }
+      
+      const user: User = {
         id: userData.id,
-        nom: userData.nom,
-        prenom: userData.prenom,
-        email: userData.email,
-        telephone: userData.telephone,
-        ville: userData.ville || userData.localite,
+        nom: userData.nom || '',
+        prenom: userData.prenom || '',
+        email: userData.email || '',
+        telephone: userData.telephone || '',
+        ville: userData.ville || userData.localite || '',
         roles: userData.roles || [],
         dateInscription: userData.dateInscription
       };
+      
+      console.log('👤 Utilisateur décodé:', user);
+      return user;
     } catch (error) {
       console.error('Erreur décodage token:', error);
       return null;
     }
   }
 
-  private isTokenExpired(token: string): boolean {
+  public isTokenExpired(token: string): boolean {
     try {
       const decoded: any = jwtDecode(token);
       const exp = decoded.exp;
       const now = Date.now() / 1000;
-      return exp < now;
+      const isExpired = exp < now;
+      if (isExpired) {
+        console.log('Token expiré depuis', new Date(exp * 1000));
+      }
+      return isExpired;
     } catch {
       return true;
     }
   }
 
+  private clearAuthData() {
+    localStorage.removeItem('token');
+    this.currentUser.set(null);
+    this.isLoggedIn.set(false);
+  }
+
   async login(email: string, password: string): Promise<{ success: boolean; message: string }> {
     try {
+      console.log('🔑 Tentative de login pour:', email);
       const response = await firstValueFrom(
         this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
       );
+      
+      console.log('📥 Réponse login:', response);
       
       if (response.success && response.token) {
         localStorage.setItem('token', response.token);
         const user = this.decodeUserFromToken(response.token);
         
-        if (user) {
+        if (user && user.id) {
           this.currentUser.set(user);
           this.isLoggedIn.set(true);
+          console.log('✅ Login réussi pour:', user.email, 'ID:', user.id);
           return { success: true, message: response.message };
         } else {
-          return { success: false, message: 'Erreur lors du décodage du token' };
+          console.error('❌ Impossible d\'extraire l\'utilisateur du token');
+          return { success: false, message: 'Erreur lors de la connexion' };
         }
       }
       return { success: false, message: response.message };
@@ -94,7 +157,7 @@ export class AuthService {
     }
   }
 
-  async register(userData: UserRequest): Promise<{ success: boolean; message: string }> {
+  async register(userData: any): Promise<{ success: boolean; message: string }> {
     try {
       const response = await firstValueFrom(
         this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData)
@@ -108,8 +171,6 @@ export class AuthService {
           this.currentUser.set(user);
           this.isLoggedIn.set(true);
           return { success: true, message: response.message };
-        } else {
-          return { success: false, message: 'Erreur lors du décodage du token' };
         }
       }
       return { success: false, message: response.message };
@@ -136,5 +197,11 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+  
+  // Nouvelle méthode pour forcer le rechargement de l'utilisateur
+  refreshUser(): User | null {
+    this.loadStoredData();
+    return this.currentUser();
   }
 }

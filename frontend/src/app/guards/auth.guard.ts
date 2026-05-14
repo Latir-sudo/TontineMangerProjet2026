@@ -7,7 +7,13 @@ export class AuthGuard {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    if (this.authService.isLoggedIn()) {
+    const token = this.authService.getToken();
+    // Vérifie la présence d'un token et qu'il n'est pas expiré
+    if (token && !this.authService.isTokenExpired(token)) {
+      // Recharge l'utilisateur si besoin
+      if (!this.authService.currentUser() || !this.authService.isLoggedIn()) {
+        this.authService.refreshUser();
+      }
       return true;
     }
     this.router.navigate(['/login']);
