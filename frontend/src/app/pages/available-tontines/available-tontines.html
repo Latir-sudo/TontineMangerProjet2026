@@ -60,11 +60,7 @@
     <p>Chargement des tontines...</p>
   </div>
 
-  <!-- DEBUG: Affichage brut des noms de tontines filtrées -->
-  <div *ngIf="!isLoading && filteredTontines.length > 0" style="background: #ffe; padding: 8px; margin-bottom: 12px; border: 1px solid #ccc;">
-    <b>DEBUG: Tontines filtrées (noms):</b>
-    <span *ngFor="let t of filteredTontines">{{ t.nomTontine }} | </span>
-  </div>
+ 
 
   <!-- Grille des tontines -->
   <div class="tontines-grid" *ngIf="!isLoading">

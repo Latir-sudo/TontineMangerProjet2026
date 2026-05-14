@@ -129,6 +129,7 @@ export class AvailableTontines implements OnInit {
     if (this.selectedFilter !== 'Toutes') {
       result = result.filter(t => t.categorie === this.selectedFilter);
     }
+    
 
     // 3. Filtrer par recherche textuelle
     if (this.searchText.trim()) {
