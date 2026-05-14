@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -52,41 +52,40 @@ export class AvailableTontines implements OnInit {
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
     console.log('[DEBUG] ngOnInit appelé');
     await this.loadData();
+    this.cdr.detectChanges();
     console.log('[DEBUG] Après loadData, filteredTontines:', this.filteredTontines);
   }
-
   private async loadData() {
     this.isLoading = true;
+    this.cdr.detectChanges();
     console.log('[DEBUG] Début loadData');
     try {
       // 1. Charger toutes les tontines
       const allTontines = await this.apiService.get<Tontine[]>('/tontine');
       this.allTontines = allTontines || [];
-      console.log('✅ Tontines chargées:', this.allTontines.length, this.allTontines);
-      
+      console.log('✅ Tontines chargées:', this.allTontines.length);
       // 2. Extraire les catégories uniques
       this.extractCategories();
-      
       // 3. Charger les IDs des tontines de l'utilisateur
       await this.loadUserTontineIds();
       console.log('[DEBUG] Après loadUserTontineIds, mesTontinesIds:', this.mesTontinesIds);
-      
-      // 4. Appliquer les filtres (important pour affichage immédiat)
+      // 4. ✅ CRUCIAL : Appliquer les filtres APRÈS le chargement
       this.applyFilters();
-      console.log('[DEBUG] Après applyFilters, filteredTontines:', this.filteredTontines);
-      
+      console.log('[DEBUG] Après applyFilters, filteredTontines:', this.filteredTontines.length);
     } catch (error) {
       console.error('❌ Erreur chargement:', error);
       this.allTontines = [];
       this.filteredTontines = [];
     } finally {
       this.isLoading = false;
+      this.cdr.detectChanges();
       console.log('[DEBUG] Fin loadData, isLoading:', this.isLoading);
     }
   }
@@ -118,36 +117,37 @@ export class AvailableTontines implements OnInit {
     console.log('📋 Catégories disponibles:', this.filters);
   }
 
-  applyFilters() {
-    // Partir de toutes les tontines
-    let result = [...this.allTontines];
-    
-    // 1. Exclure celles où l'utilisateur est déjà membre
-    result = result.filter(t => !this.mesTontinesIds.includes(t.id));
-    
-    // 2. Filtrer par catégorie
-    if (this.selectedFilter !== 'Toutes') {
-      result = result.filter(t => t.categorie === this.selectedFilter);
-    }
-    
-
-    // 3. Filtrer par recherche textuelle
-    if (this.searchText.trim()) {
-      const search = this.searchText.toLowerCase();
-      result = result.filter(t =>
-        t.nomTontine?.toLowerCase().includes(search) ||
-        t.region?.toLowerCase().includes(search) ||
-        t.descriptionTontine?.toLowerCase().includes(search)
-      );
-    }
-
-    // 4. Trier
-    result = this.sortTontines(result);
-    
-    this.filteredTontines = result;
-    console.log('🎯 Tontines affichées:', this.filteredTontines.length);
+ applyFilters() {
+  console.log('🟢 applyFilters() - allTontines:', this.allTontines.length);
+  console.log('🟢 applyFilters() - mesTontinesIds:', this.mesTontinesIds);
+  
+  // Partir de toutes les tontines
+  let result = [...this.allTontines];
+  
+  // 1. Exclure celles où l'utilisateur est déjà membre
+  result = result.filter(t => !this.mesTontinesIds.includes(t.id));
+  
+  // 2. Filtrer par catégorie
+  if (this.selectedFilter !== 'Toutes') {
+    result = result.filter(t => t.categorie === this.selectedFilter);
   }
 
+  // 3. Filtrer par recherche textuelle
+  if (this.searchText.trim()) {
+    const search = this.searchText.toLowerCase();
+    result = result.filter(t =>
+      t.nomTontine?.toLowerCase().includes(search) ||
+      t.region?.toLowerCase().includes(search) ||
+      t.descriptionTontine?.toLowerCase().includes(search)
+    );
+  }
+
+  // 4. Trier
+  result = this.sortTontines(result);
+  
+  this.filteredTontines = result;
+  console.log('🎯 Tontines affichées:', this.filteredTontines.length);
+}
   sortTontines(tontines: Tontine[]): Tontine[] {
     const sorted = [...tontines];
     switch (this.sortBy) {

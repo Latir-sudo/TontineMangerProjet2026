@@ -1,0 +1,100 @@
+<div class="page-shell detail-shell">
+  <header class="detail-header">
+    <button class="back-link" routerLink="/available-tontines">← Retour</button>
+    <div *ngIf="!isLoading && tontine">
+      <span class="brand-pill">Détail tontine</span>
+      <h1>{{ tontine.nomTontine }}</h1>
+      <p>{{ tontine.descriptionTontine || 'Rejoignez cette tontine et commencez à épargner' }}</p>
+    </div>
+    <div *ngIf="isLoading">
+      <h1>Chargement...</h1>
+    </div>
+  </header>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+    <button routerLink="/available-tontines" class="btn-link">Retour à la liste</button>
+  </div>
+
+  <!-- Détails de la tontine -->
+  <section class="detail-card" *ngIf="!isLoading && tontine">
+    <div class="detail-top">
+      <div>
+        <p class="detail-type">{{ tontine.categorie || 'Tontine générale' }}</p>
+        <h2>{{ tontine.nomTontine }}</h2>
+      </div>
+      <span class="amount-flag">{{ tontine.montant | number }} FCFA</span>
+    </div>
+
+    <div class="detail-grid">
+      <div class="info-box">
+        <strong>{{ tontine.nombreMembres || 0 }}/20</strong>
+        <span>Membres</span>
+      </div>
+      <div class="info-box">
+        <strong>{{ tontine.frequence || 'Mensuel' }}</strong>
+        <span>Fréquence</span>
+      </div>
+      <div class="info-box">
+        <strong>À venir</strong>
+        <span>Prochain paiement</span>
+      </div>
+    </div>
+   <!-- Barre de progression -->
+<<div class="progress-section" *ngIf="tontine.nombreMembres">
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+  </div>
+  <span class="progress-text">
+    {{ tontine.nombreMembres }} / {{ tontine.nombreMax || 20 }} membres 
+    ({{ getProgressPercentage() | number:'1.0-0' }}% remplie)
+  </span>
+</div>
+
+    <div class="description-card">
+      <p>{{ tontine.descriptionTontine || 'Aucune description disponible.' }}</p>
+    </div>
+
+    <div class="detail-meta">
+      <div>
+        <strong>Localisation</strong>
+        <span>{{ tontine.region || 'Sénégal' }}</span>
+      </div>
+      <div>
+        <strong>Administrateur</strong>
+        <span>{{ tontine.admin?.prenom || 'Admin' }} {{ tontine.admin?.nom || '' }}</span>
+      </div>
+      <div>
+        <strong>Statut</strong>
+        <span>{{ tontine.statutTontine || 'Active' }}</span>
+      </div>
+    </div>
+
+    <button 
+      *ngIf="!isJoined" 
+      class="primary-button" 
+      type="button" 
+      (click)="join()"
+    >
+      Rejoindre cette tontine
+    </button>
+    
+    <button 
+      *ngIf="isJoined" 
+      class="joined-button" 
+      type="button" 
+      disabled
+    >
+      ✓ Vous êtes déjà membre
+    </button>
+  </section>
+
+  <!-- Squelette de chargement -->
+  <div *ngIf="isLoading && !tontine" class="skeleton-card">
+    <div class="skeleton-header"></div>
+    <div class="skeleton-line"></div>
+    <div class="skeleton-line short"></div>
+    <div class="skeleton-grid"></div>
+  </div>
+</div>

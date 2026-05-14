@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TontineCreate } from './tontine-create';
+import { DetailTontine } from './detail-tontine';
 
-describe('TontineCreate', () => {
-  let component: TontineCreate;
-  let fixture: ComponentFixture<TontineCreate>;
+describe('DetailTontine', () => {
+  let component: DetailTontine;
+  let fixture: ComponentFixture<DetailTontine>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TontineCreate],
+      imports: [DetailTontine],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TontineCreate);
+    fixture = TestBed.createComponent(DetailTontine);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

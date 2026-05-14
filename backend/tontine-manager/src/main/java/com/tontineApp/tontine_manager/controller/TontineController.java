@@ -29,7 +29,7 @@ public class TontineController {
 
     // MEMBRE ou ADMIN : voir une tontine spécifique
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdminOrMember(authentication, #id)")
+    @PreAuthorize("isAuthenticated()")
     public TontineResponse getTontine(@PathVariable("id") Integer idTontine) {
         return tontineService.getById(idTontine);
     }
