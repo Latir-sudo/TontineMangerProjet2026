@@ -2,8 +2,8 @@
   <section class="create-card">
     <div class="create-header">
       <a routerLink="/dashboard" class="back-link">← Retour</a>
-      <h1>Créer une tontine</h1>
-      <p>Remplissez les informations pour créer votre tontine</p>
+      <h1>{{ isEditing ? 'Modifier la tontine' : 'Créer une tontine' }}</h1>
+      <p>{{ isEditing ? 'Mettez à jour les informations de votre tontine' : 'Remplissez les informations pour créer votre tontine' }}</p>
     </div>
 
     <!-- Messages -->
@@ -105,7 +105,7 @@
       </label>
 
       <button class="primary-button" type="submit" [disabled]="isLoading">
-        {{ isLoading ? 'Création en cours...' : 'Créer la tontine' }}
+        {{ isLoading ? (isEditing ? 'Modification en cours...' : 'Création en cours...') : (isEditing ? 'Modifier la tontine' : 'Créer la tontine') }}
       </button>
     </form>
   </section>

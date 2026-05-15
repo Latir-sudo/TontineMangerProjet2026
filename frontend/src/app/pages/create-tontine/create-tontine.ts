@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth.services';
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.services';
   templateUrl: './create-tontine.html',
   styleUrls: ['./create-tontine.scss']
 })
-export class TontineCreate {
+export class TontineCreate implements OnInit {
   
   // Formulaire - correspond exactement au DTO TontineRequest
   form = {
@@ -36,12 +36,48 @@ export class TontineCreate {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  editingTontineId: number | null = null;
+  isEditing = false;
 
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  async ngOnInit() {
+    // Vérifier si nous sommes en mode édition
+    const id = this.route.snapshot.queryParamMap.get('id');
+    if (id) {
+      this.editingTontineId = parseInt(id);
+      this.isEditing = true;
+      await this.loadTontineData(this.editingTontineId);
+    }
+  }
+
+  private async loadTontineData(id: number) {
+    this.isLoading = true;
+    try {
+      const tontine = await this.apiService.get<any>(`/tontine/${id}`);
+      this.form = {
+        nomTontine: tontine.nomTontine,
+        frequence: tontine.frequence || 'MENSUEL',
+        montant: tontine.montant,
+        dateCreation: tontine.dateCreation || new Date().toISOString().split('T')[0],
+        descriptionTontine: tontine.descriptionTontine || '',
+        politiqueTontine: tontine.politiqueTontine || 'Standard',
+        categorie: tontine.categorie || '',
+        region: tontine.region || 'Dakar',
+        nombreMax: tontine.nombreMax || 10
+      };
+    } catch (error) {
+      this.errorMessage = 'Impossible de charger les données de la tontine';
+      console.error(error);
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
   async create() {
     // Réinitialisation des messages
@@ -85,23 +121,33 @@ export class TontineCreate {
         nombreMax: this.form.nombreMax
       };
       
-      console.log('📤 Envoi au backend:', tontineData);
-      
-      // Appel API POST /api/tontine
-      const response = await this.apiService.post('/tontine', tontineData);
+      let response: any;
+      let tontineId: number;
+
+      if (this.isEditing && this.editingTontineId) {
+        // Mode édition - utiliser PUT
+        console.log('📤 Mise à jour tontine:', tontineData);
+        response = await this.apiService.put(`/tontine/${this.editingTontineId}`, tontineData);
+        tontineId = this.editingTontineId;
+        this.successMessage = 'Tontine modifiée avec succès ! Redirection...';
+      } else {
+        // Mode création - utiliser POST
+        console.log('📤 Création tontine:', tontineData);
+        response = await this.apiService.post('/tontine', tontineData);
+        tontineId = response.id;
+        this.successMessage = 'Tontine créée avec succès ! Redirection...';
+      }
       
       console.log('✅ Réponse:', response);
       
-      this.successMessage = 'Tontine créée avec succès ! Redirection...';
-      
-      // Redirection vers le dashboard après 2 secondes
+      // Redirection vers la page de détail après 1.5 secondes
       setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 2000);
+        this.router.navigate(['/tontine', tontineId]);
+      }, 1500);
       
     } catch (error: any) {
-      console.error('❌ Erreur création tontine:', error);
-      this.errorMessage = error.error?.message || 'Erreur lors de la création de la tontine';
+      console.error('❌ Erreur:', error);
+      this.errorMessage = error.error?.message || 'Erreur lors de l\'opération';
     } finally {
       this.isLoading = false;
     }

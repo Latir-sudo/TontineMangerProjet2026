@@ -15,11 +15,7 @@ interface Tontine {
   nombreMembres?: number;
   nombreMax?: number;
   statutTontine?: string;
-  admin?: {
-    id: number;
-    nom: string;
-    prenom: string;
-  };
+  idAdmin?: number;  // ← UTILISER idAdmin
 }
 
 @Component({
@@ -35,10 +31,14 @@ export class DetailTontine implements OnInit {
   isLoading = true;
   errorMessage = '';
   isJoined = false;
+  isAdmin = false;
+  currentUserId: number | null = null;
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -47,6 +47,7 @@ export class DetailTontine implements OnInit {
     if (id) {
       await this.loadTontineDetail(parseInt(id));
       await this.checkIfJoined();
+      this.checkIfAdmin();
       this.cdr.detectChanges();
     } else {
       this.errorMessage = 'ID de tontine non trouvé';
@@ -59,9 +60,11 @@ export class DetailTontine implements OnInit {
     this.isLoading = true;
     this.cdr.detectChanges();
     try {
-      // Récupérer les détails de la tontine
       this.tontine = await this.apiService.get<Tontine>(`/tontine/${id}`);
-      console.log('Détails tontine chargés:', this.tontine);
+      console.log('=== RÉPONSE API TONTINE ===');
+      console.log('Tontine reçue:', this.tontine);
+      console.log('idAdmin:', this.tontine?.idAdmin);
+      console.log('===========================');
     } catch (error) {
       console.error('Erreur chargement détail:', error);
       this.errorMessage = 'Impossible de charger les détails de la tontine';
@@ -83,6 +86,44 @@ export class DetailTontine implements OnInit {
     }
   }
 
+  private checkIfAdmin() {
+    if (!this.tontine) {
+      console.warn('⚠️ Tontine non chargée');
+      this.isAdmin = false;
+      return;
+    }
+    
+    const adminId = this.tontine.idAdmin;
+    
+    if (!adminId) {
+      console.warn('⚠️ Pas d\'idAdmin trouvé');
+      this.isAdmin = false;
+      return;
+    }
+    
+    const currentUser = this.authService.getCurrentUser();
+    console.log('🔍 Vérification admin:', {
+      tontineAdminId: adminId,
+      currentUserId: currentUser?.id,
+      currentUserEmail: currentUser?.email
+    });
+    
+    if (!currentUser) {
+      console.warn('⚠️ Utilisateur non connecté');
+      this.isAdmin = false;
+      return;
+    }
+    
+    this.isAdmin = adminId === currentUser.id;
+    console.log(`${this.isAdmin ? '✅' : '❌'} Admin: ${this.isAdmin}`);
+  }
+
+  editTontine() {
+    if (this.tontine) {
+      this.router.navigate(['/tontine/create'], { queryParams: { id: this.tontine.id } });
+    }
+  }
+
   async join() {
     if (!this.tontine) return;
     
@@ -96,10 +137,10 @@ export class DetailTontine implements OnInit {
     }
   }
 
- getProgressPercentage(): number {
-  if (!this.tontine || !this.tontine.nombreMembres) return 0;
-  const max = this.tontine.nombreMax || 20;
-  const percentage = (this.tontine.nombreMembres / max) * 100;
-  return Math.min(percentage, 100);
-}
+  getProgressPercentage(): number {
+    if (!this.tontine || !this.tontine.nombreMembres) return 0;
+    const max = this.tontine.nombreMax || 20;
+    const percentage = (this.tontine.nombreMembres / max) * 100;
+    return Math.min(percentage, 100);
+  }
 }

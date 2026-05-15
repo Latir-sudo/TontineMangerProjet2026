@@ -1,6 +1,15 @@
 <div class="page-shell detail-shell">
   <header class="detail-header">
-    <button class="back-link" routerLink="/available-tontines">← Retour</button>
+    <div class="header-buttons">
+      <button class="back-link" routerLink="/available-tontines">← Retour</button>
+      <button 
+        *ngIf="isAdmin && tontine"
+        class="edit-link"
+        (click)="editTontine()"
+      >
+         Modifier
+      </button>
+    </div>
     <div *ngIf="!isLoading && tontine">
       <span class="brand-pill">Détail tontine</span>
       <h1>{{ tontine.nomTontine }}</h1>
@@ -29,7 +38,7 @@
 
     <div class="detail-grid">
       <div class="info-box">
-        <strong>{{ tontine.nombreMembres || 0 }}/20</strong>
+        <strong>{{ tontine.nombreMembres || 0 }}/{{ tontine.nombreMax || 20 }}</strong>
         <span>Membres</span>
       </div>
       <div class="info-box">
@@ -41,16 +50,17 @@
         <span>Prochain paiement</span>
       </div>
     </div>
-   <!-- Barre de progression -->
-<<div class="progress-section" *ngIf="tontine.nombreMembres">
-  <div class="progress-bar">
-    <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
-  </div>
-  <span class="progress-text">
-    {{ tontine.nombreMembres }} / {{ tontine.nombreMax || 20 }} membres 
-    ({{ getProgressPercentage() | number:'1.0-0' }}% remplie)
-  </span>
-</div>
+
+    <!-- Barre de progression -->
+    <div class="progress-section" *ngIf="tontine.nombreMembres">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+      </div>
+      <span class="progress-text">
+        {{ tontine.nombreMembres }} / {{ tontine.nombreMax || 20 }} membres 
+        ({{ getProgressPercentage() | number:'1.0-0' }}% remplie)
+      </span>
+    </div>
 
     <div class="description-card">
       <p>{{ tontine.descriptionTontine || 'Aucune description disponible.' }}</p>
@@ -63,7 +73,8 @@
       </div>
       <div>
         <strong>Administrateur</strong>
-        <span>{{ tontine.admin?.prenom || 'Admin' }} {{ tontine.admin?.nom || '' }}</span>
+        <!-- Affichage simplifié puisque nous n'avons pas le nom dans la réponse -->
+        <span>Administrateur #{{ tontine.idAdmin }}</span>
       </div>
       <div>
         <strong>Statut</strong>

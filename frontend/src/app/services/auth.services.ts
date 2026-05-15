@@ -199,6 +199,10 @@ export class AuthService {
     return localStorage.getItem('token');
   }
   
+  getCurrentUser(): User | null {
+    return this.currentUser();
+  }
+  
   // Nouvelle méthode pour forcer le rechargement de l'utilisateur
   refreshUser(): User | null {
     this.loadStoredData();
