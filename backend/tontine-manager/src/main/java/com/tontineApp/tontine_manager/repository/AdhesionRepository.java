@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AdhesionRepository extends JpaRepository<Adhesion,Integer> {
 
-    public List<Adhesion> findAllByStatutAndTontine_Id(StatutAdhesion statutAdhesion, Integer tontine);
-    public Optional<Adhesion> findByUser_idAndTontine_Id(Integer user_id, Integer tontine);
-
+    public List<Adhesion> findByStatutAndTontine_Id(StatutAdhesion statutAdhesion, Integer tontine);
+    public Optional<Adhesion> findByUser_IdAndTontine_Id(Integer user_id, Integer tontine);
+    boolean existsByUser_idAndTontine_IdStatut(Integer idUser,Integer idTontine,StatutAdhesion statutAdhesion);
 }

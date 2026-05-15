@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.services';
 
 interface Tontine {
   id: number;
@@ -21,6 +22,19 @@ interface Tontine {
   };
 }
 
+interface DemandeAdhesion {
+  id: number;
+  membre:{
+    id:number;
+    nom:string;
+    prenom:string;
+    email?:string
+  };
+
+statut:'PENDING' | 'APPROVED' | 'REJECTED';
+dateDemande:string;
+}
+
 @Component({
   selector: 'app-tontine-detail',
   standalone: true,
@@ -34,11 +48,14 @@ export class DetailTontine implements OnInit {
   isLoading = true;
   errorMessage = '';
   isJoined = false;
+  isAdmin=false;
+  demandes:DemandeAdhesion[]=[];
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
     private router: Router,  // ← Ajouter Router
+    private authService: AuthService, // ← Ajouter AuthService
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -47,6 +64,8 @@ export class DetailTontine implements OnInit {
     if (id) {
       await this.loadTontineDetail(parseInt(id));
       await this.checkIfJoined();
+      await this.checkIfAdmin();
+      await this.loadDemandesAdhesion();
       this.cdr.detectChanges();
     } else {
       this.errorMessage = 'ID de tontine non trouvé';
@@ -86,13 +105,47 @@ export class DetailTontine implements OnInit {
     if (!this.tontine) return;
     try {
       await this.apiService.post('/tontine/adhesion', { idTontine: this.tontine.id });
-      alert('✅ Demande d\'adhésion envoyée avec succès !');
+      alert('Demande d\'adhésion envoyée avec succès !');
       this.isJoined = true;
     } catch (error) {
       console.error('Erreur adhésion:', error);
       alert('Erreur lors de la demande d\'adhésion');
     }
   }
+// 
+// méthode pour vérifier si l'utilisateur est admin de la tontine
+
+private async checkIfAdmin() {
+  if (!this.tontine) return;
+
+  try{
+    const currentUser = await this.authService.currentUser();
+  if(currentUser && this.tontine?.admin){
+  this.isAdmin = currentUser?.id === this.tontine.admin?.id;
+  this.cdr.detectChanges();
+}
+  }catch(error){
+    console.error('Erreur vérification admin:',error);
+    this.isAdmin=false;
+  }
+}
+
+// charger les demandes d'adhesion uniquement pour l'admin
+
+private async loadDemandesAdhesion(){
+  if(!this.tontine || !this.isAdmin) return;
+
+  try{
+    const demandes = await this.apiService.get<DemandeAdhesion[]>(`/tontine/${this.tontine.id}/adhesion`);
+    this.demandes = demandes;
+    console.log('Deamanes d\'adhésion chargées:',this.demandes);
+  } catch (error) {
+    console.error('Erreur chargement demandes adhesion:', error);
+    this.demandes = [];
+  } finally {
+    this.cdr.detectChanges();
+  }
+}
 
   getProgressPercentage(): number {
     if (!this.tontine || !this.tontine.nombreMembres) return 0;

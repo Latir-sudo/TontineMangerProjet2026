@@ -60,17 +60,17 @@ public class TontineController {
     }
 
     // ADMIN DE LA TONTINE : voir les demandes d'adhésion
-    @GetMapping("/adhesion")
+    @GetMapping("/{idTontine}/adhesion")
     @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #idTontine)")
-    public List<AdhesionResponse> getAttenteAdhesion(@RequestParam Integer idTontine) {
+    public List<AdhesionResponse> getAttenteAdhesion(@PathVariable Integer idTontine) {
         return adhesionService.getAdhesionAttente(idTontine);
     }
 
     // TOUT LE MONDE : faire une demande d'adhésion
-    @PostMapping("/adhesion")
+    @PostMapping("/{idTontine}/adhesion")
     @PreAuthorize("isAuthenticated()")
-    public AdhesionResponse save(@RequestBody AdhesionRequest adhesionRequest) {
-        return adhesionService.save(adhesionRequest);
+    public AdhesionResponse save(@PathVariable Integer idTontine,@RequestBody AdhesionRequest adhesionRequest) {
+        return adhesionService.save(adhesionRequest,idTontine);
     }
 
     // ADMIN DE LA TONTINE : traiter une demande d'adhésion

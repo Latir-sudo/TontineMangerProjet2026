@@ -1,8 +1,8 @@
 package com.tontineApp.tontine_manager.mapper;
 
-
 import com.tontineApp.tontine_manager.dto.AdhesionRequest;
 import com.tontineApp.tontine_manager.dto.AdhesionResponse;
+import com.tontineApp.tontine_manager.dto.UpdateStatusDto;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.model.Adhesion;
 import com.tontineApp.tontine_manager.model.Tontine;
@@ -22,36 +22,55 @@ public class AdhesionMapper {
     private final TontineRepository tontineRepository;
 
     public AdhesionResponse toAdhesionResponse(Adhesion adhesion) {
-        AdhesionResponse adhesionResponse = new AdhesionResponse();
-        adhesionResponse.setDateAdhesion(adhesion.getDateAdhesion());
-        adhesionResponse.setPrenomUser(adhesion.getUser().getPrenom());
-        adhesionResponse.setNomUser(adhesion.getUser().getNom());
-        adhesionResponse.setTelephoneUser(adhesion.getUser().getTelephone());
-        adhesionResponse.setStatut(adhesion.getStatut());
+        if (adhesion == null) {
+            throw new IllegalArgumentException("L'adhésion ne doit pas être null");
+        }
 
-        return adhesionResponse;
+        AdhesionResponse response = new AdhesionResponse();
+
+        if (adhesion.getUser() != null) {
+            response.setPrenomUser(adhesion.getUser().getPrenom());
+            response.setNomUser(adhesion.getUser().getNom());
+            response.setTelephoneUser(adhesion.getUser().getTelephone());
+            response.setEmailUser(adhesion.getUser().getEmail());
+        } else {
+            response.setPrenomUser("Inconnu");
+            response.setNomUser("Inconnu");
+            response.setTelephoneUser("Non renseigné");
+        }
+
+        response.setDateAdhesion(adhesion.getDateAdhesion());
+        response.setStatut(adhesion.getStatut());
+        response.setIdUser(adhesion.getUser() != null ? adhesion.getUser().getId() : null);
+        response.setIdTontine(adhesion.getTontine() != null ? adhesion.getTontine().getId() : null);
+
+        return response;
     }
 
-    public AdhesionRequest toAdhesionRequest(Adhesion adhesion){
-        AdhesionRequest adhesionRequest = new AdhesionRequest();
-        adhesionRequest.setDateAdhesion(adhesion.getDateAdhesion());
-        adhesionRequest.setIdTontine(adhesion.getUser().getId());
-        adhesionRequest.setIdTontine(adhesion.getTontine().getId());
+    public Adhesion toAdhesion(AdhesionRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("La requête d'adhésion ne doit pas être null");
+        }
 
-        return adhesionRequest;
-    }
-
-    public Adhesion toAdhesion(AdhesionRequest adhesionRequest){
         Adhesion adhesion = new Adhesion();
-        Users user = userRepository.findById(adhesionRequest.getIdUser()).orElseThrow(()->new RessourceNotFoundException("user not found"));
-        Tontine tontine = tontineRepository.findById(adhesionRequest.getIdTontine()).orElseThrow(()->new RessourceNotFoundException("tontine not found"));
-       adhesion.setUser(user);
-       adhesion.setTontine(tontine);
-       adhesion.setDateAdhesion(adhesionRequest.getDateAdhesion());
-       adhesion.setStatut(ATTENTE);
 
-       return adhesion;
+        // Récupérer l'utilisateur
+        Users user = userRepository.findById(request.getIdUser())
+                .orElseThrow(() -> new RessourceNotFoundException("Utilisateur non trouvé"));
+        adhesion.setUser(user);
+
+        adhesion.setDateAdhesion(request.getDateAdhesion());
+        adhesion.setStatut(ATTENTE);
+
+        return adhesion;
     }
 
-
+    public void updateAdhesionFromDto(Adhesion adhesion, UpdateStatusDto dto) {
+        if (dto.getStatut() != null) {
+            adhesion.setStatut(dto.getStatut());
+        }
+        if (dto.getDate() != null) {
+            adhesion.setDateAdhesion(dto.getDate());
+        }
+    }
 }

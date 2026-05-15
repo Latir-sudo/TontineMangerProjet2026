@@ -13,11 +13,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AdhesionResponse {
 
+    private Integer idUser;
+    private Integer idTontine;
+
     @NotBlank
     private String prenomUser;
     private String nomUser;
+
     @NotBlank
     private String telephoneUser;
+
+    private String emailUser;
+
     private LocalDate dateAdhesion;
     private StatutAdhesion statut;
 }

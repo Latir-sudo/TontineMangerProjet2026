@@ -1,0 +1,65 @@
+<div class="page-shell admin-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/">← Retour</button>
+    <div>
+      <span class="brand-pill">Administration</span>
+      <h1>Validation des adhésions</h1>
+      <p>Approvez les demandes d’adhésion et confirmez les paiements des membres en quelques clics.</p>
+    </div>
+  </header>
+
+  <section class="admin-grid">
+    <div class="summary-card">
+      <div>
+        <h2>Statistiques rapides</h2>
+        <p>Vue claire de l’activité de votre tontine.</p>
+      </div>
+      <div class="stats">
+        <div><strong>15</strong><span>Membres actifs</span></div>
+        <div><strong>2</strong><span>Demandes</span></div>
+        <div><strong>5</strong><span>Paiements à valider</span></div>
+        <div><strong>12</strong><span>Transactions confirmées</span></div>
+      </div>
+    </div>
+
+    <div class="card card-large">
+      <div class="card-header">
+        <h2>Demandes d’adhésion</h2>
+        <p>Validez rapidement chaque nouvelle demande.</p>
+      </div>
+      <div class="list-group">
+        <article *ngFor="let request of requests; let i = index" class="list-item">
+          <div>
+            <strong>{{ request.name }}</strong>
+            <span>{{ request.phone }}</span>
+            <small>Demande du {{ request.date }}</small>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="primary-button" (click)="acceptRequest(i)" [disabled]="request.status !== 'pending'">Accepter</button>
+            <button type="button" class="secondary-button" (click)="rejectRequest(i)" [disabled]="request.status !== 'pending'">Refuser</button>
+          </div>
+          <span class="pill {{ request.status }}">{{ getRequestLabel(request.status) }}</span>
+        </article>
+      </div>
+    </div>
+
+    <div class="card card-large">
+      <div class="card-header">
+        <h2>Confirmation de paiement</h2>
+        <p>Confirmez que chaque membre a bien payé sa part.</p>
+      </div>
+      <div class="list-group">
+        <article *ngFor="let payment of payments; let i = index" class="list-item">
+          <div>
+            <strong>{{ payment.name }}</strong>
+            <span>{{ payment.amount }}</span>
+          </div>
+          <div class="item-actions">
+            <button type="button" class="primary-button" (click)="confirmPayment(i)" [disabled]="payment.status !== 'pending'">Confirmer</button>
+          </div>
+          <span class="pill {{ payment.status }}">{{ getPaymentLabel(payment.status) }}</span>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>

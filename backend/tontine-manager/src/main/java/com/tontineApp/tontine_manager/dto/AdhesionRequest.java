@@ -12,6 +12,5 @@ import java.time.LocalDate;
 public class AdhesionRequest {
 
     private Integer idUser;
-    private Integer idTontine;
     private LocalDate dateAdhesion;
 }
