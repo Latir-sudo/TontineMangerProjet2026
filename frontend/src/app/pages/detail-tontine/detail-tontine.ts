@@ -2,7 +2,6 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
-import { AuthService } from '../../services/auth.services';
 
 interface Tontine {
   id: number;
@@ -39,6 +38,7 @@ export class DetailTontine implements OnInit {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
+    private router: Router,  // ← Ajouter Router
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -59,7 +59,6 @@ export class DetailTontine implements OnInit {
     this.isLoading = true;
     this.cdr.detectChanges();
     try {
-      // Récupérer les détails de la tontine
       this.tontine = await this.apiService.get<Tontine>(`/tontine/${id}`);
       console.log('Détails tontine chargés:', this.tontine);
     } catch (error) {
@@ -85,7 +84,6 @@ export class DetailTontine implements OnInit {
 
   async join() {
     if (!this.tontine) return;
-    
     try {
       await this.apiService.post('/tontine/adhesion', { idTontine: this.tontine.id });
       alert('✅ Demande d\'adhésion envoyée avec succès !');
@@ -96,10 +94,16 @@ export class DetailTontine implements OnInit {
     }
   }
 
- getProgressPercentage(): number {
-  if (!this.tontine || !this.tontine.nombreMembres) return 0;
-  const max = this.tontine.nombreMax || 20;
-  const percentage = (this.tontine.nombreMembres / max) * 100;
-  return Math.min(percentage, 100);
-}
+  getProgressPercentage(): number {
+    if (!this.tontine || !this.tontine.nombreMembres) return 0;
+    const max = this.tontine.nombreMax || 20;
+    const percentage = (this.tontine.nombreMembres / max) * 100;
+    return Math.min(percentage, 100);
+  }
+
+  goToPayment(): void {
+    if (!this.tontine) return;
+    
+    this.router.navigate(['/paiement', this.tontine.id]); 
+  }
 }

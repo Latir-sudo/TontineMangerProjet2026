@@ -1,17 +1,16 @@
 // pages/historiques/historiques.ts
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';  // ← À importer
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PaiementService } from '../../services/paiement.service';
 import { PaiementHistorique, PaiementStats } from '../../models/paiement.model';
 
 @Component({
   selector: 'app-historiques',
-  standalone: true,  // ← Si composant standalone
-  imports: [CommonModule],  // ← Ajoute CommonModule ici
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './historiques.html',
   styleUrls: ['./historiques.scss']
 })
-// OU si tu utilises NgModule, vois la solution alternative ci-dessous
 export class Historiques implements OnInit {
 
   filter: 'all' | 'success' | 'pending' | 'failed' = 'all';
@@ -22,26 +21,33 @@ export class Historiques implements OnInit {
 
   currentMembreId: number = 1;
 
-  constructor(private paiementService: PaiementService) { }
+  constructor(
+    private paiementService: PaiementService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.loadHistorique();
     this.loadStats();
-  }
+    }
 
   loadHistorique(): void {
     this.isLoading = true;
     this.errorMessage = null;
+    this.cdr.detectChanges(); 
 
     this.paiementService.getHistoriqueByMembre(this.currentMembreId).subscribe({
       next: (data) => {
+        console.log('Historique reçu:', data);
         this.payments = data;
         this.isLoading = false;
+        this.cdr.detectChanges(); // ✅ Force la mise à jour de l'affichage
       },
       error: (err) => {
-        console.error('Erreur:', err);
-        this.errorMessage = 'Impossible de charger votre historique. Veuillez réessayer.';
+        console.error('Erreur chargement historique:', err);
+        this.errorMessage = err.error?.message || 'Impossible de charger votre historique.';
         this.isLoading = false;
+        this.cdr.detectChanges(); // ✅ Force l'affichage de l'erreur
       }
     });
   }
@@ -49,10 +55,19 @@ export class Historiques implements OnInit {
   loadStats(): void {
     this.paiementService.getStatsByMembre(this.currentMembreId).subscribe({
       next: (data) => {
+        console.log('Stats reçues:', data);
         this.stats = data;
+        this.cdr.detectChanges(); // ✅ Force la mise à jour des stats
       },
-      error: (err) => console.error('Erreur chargement stats:', err)
+      error: (err) => {
+        console.error('Erreur chargement stats:', err);
+        // Optionnel : afficher une erreur pour les stats
+      }
     });
+  }
+
+  setFilter(filter: 'all' | 'success' | 'pending' | 'failed'): void {
+    this.filter = filter;
   }
 
   get filteredPayments(): PaiementHistorique[] {
@@ -60,22 +75,18 @@ export class Historiques implements OnInit {
       case 'success':
         return this.payments.filter(p => p.valide === true);
       case 'pending':
-        return this.payments.filter(p => p.valide === null);
-      case 'failed':
         return this.payments.filter(p => p.valide === false);
+      case 'failed':
+        return this.payments.filter(p => p.valide === null);
       default:
         return this.payments;
     }
   }
 
-  setFilter(filter: 'all' | 'success' | 'pending' | 'failed'): void {
-    this.filter = filter;
-  }
-
   getStatusLabel(payment: PaiementHistorique): string {
     if (payment.valide === true) return 'Réussi';
-    if (payment.valide === false) return 'Échoué';
-    return 'En attente';
+    if (payment.valide === false) return 'Attente';
+    return 'false';
   }
 
   getStatusClass(payment: PaiementHistorique): string {

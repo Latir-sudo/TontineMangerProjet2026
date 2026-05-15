@@ -1,10 +1,10 @@
-<div class="page-shell history-shell">
+<div class="page-shell history-shell mt-10">
   <header class="page-header">
     <button class="back-link" routerLink="/">← Retour</button>
     <div>
       <span class="brand-pill">Historique cotisation</span>
       <h1>Historique des cotisations</h1>
-      <p>Suivez les paiements réussis et les cotisations en attente.</p>
+      <p>Retrouvez ici l'historique de tous vos paiements.</p>
     </div>
   </header>
 
@@ -16,71 +16,58 @@
 
   <!-- Erreur -->
   <div *ngIf="errorMessage" class="error-state">
-    <span class="error-icon">⚠️</span>
+    <span class="error-icon"></span>
     <p>{{ errorMessage }}</p>
     <button (click)="loadHistorique()" class="retry-btn">Réessayer</button>
   </div>
 
-  <!-- Résumé des statistiques -->
-  <div *ngIf="!isLoading && !errorMessage && stats" class="stats-grid">
-    <div class="stat-card">
-      <span class="stat-label">Total cotisé</span>
-      <strong class="stat-amount">{{ stats.totalPaye | number }} FCFA</strong>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
-      </div>
-      <small>Objectif: {{ stats.totalAttendu | number }} FCFA</small>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Paiements réussis</span>
-      <strong class="stat-success">{{ stats.paiementsReussis }}</strong>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">En attente</span>
-      <strong class="stat-pending">{{ stats.paiementsEnAttente }}</strong>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Échoués</span>
-      <strong class="stat-failed">{{ stats.paiementsEchoues }}</strong>
-    </div>
-  </div>
-
-  <!-- Filtres -->
-  <div *ngIf="!isLoading && !errorMessage" class="history-tabs">
+  <!-- Filtres simples -->
+  <div *ngIf="!isLoading && !errorMessage && payments.length > 0" class="history-tabs">
     <button [class.active]="filter === 'all'" (click)="setFilter('all')">Tous</button>
     <button [class.active]="filter === 'success'" (click)="setFilter('success')">Réussis</button>
     <button [class.active]="filter === 'pending'" (click)="setFilter('pending')">En attente</button>
-    <button [class.active]="filter === 'failed'" (click)="setFilter('failed')">Échoués</button>
   </div>
 
   <!-- Liste des paiements -->
   <div *ngIf="!isLoading && !errorMessage" class="history-list">
+    <!-- Message liste vide -->
     <div *ngIf="filteredPayments.length === 0" class="empty-state">
       <span class="empty-icon">📭</span>
-      <p>Aucune cotisation {{ getFilterLabel() }} à afficher</p>
+      <p>Aucune cotisation à afficher</p>
     </div>
 
-    <div *ngFor="let payment of filteredPayments" class="history-card" [class.pending]="payment.valide === null" [class.failed]="payment.valide === false">
-      <div class="card-left">
+    <!-- Cartes des paiements -->
+    <div *ngFor="let payment of filteredPayments" class="history-card" 
+         [class.pending]="payment.valide === false" 
+         [class.failed]="payment.valide === null">
+      
+      <!-- Ligne 1 : Titre et statut -->
+      <div class="card-header">
         <div class="card-icon">
           <span *ngIf="payment.valide === true">✅</span>
-          <span *ngIf="payment.valide === null">⏳</span>
-          <span *ngIf="payment.valide === false">❌</span>
+          <span *ngIf="payment.valide === null">❌</span>
+          <span *ngIf="payment.valide === false"></span>
         </div>
-        <div class="card-info">
+        <div class="card-title">
           <strong>{{ payment.titreCotisation }}</strong>
           <span class="card-method">{{ getMethodLabel(payment.modePaiement) }}</span>
         </div>
+        <div class="card-status">
+          <span class="status-badge" [class]="getStatusClass(payment)">
+            {{ getStatusLabel(payment) }}
+          </span>
+        </div>
       </div>
-      <div class="card-right">
-        <strong class="card-amount">{{ payment.montant | number }} FCFA</strong>
-        <span class="card-status" [class]="getStatusClass(payment)">
-          {{ getStatusLabel(payment) }}
-        </span>
+      
+      <!-- Ligne 2 : Montant -->
+      <div class="card-amount">
+        <strong>{{ payment.montant | number }} FCFA</strong>
       </div>
-      <div class="card-meta">
-        <span class="card-date">📅 {{ payment.datePaiement | date:'dd/MM/yyyy à HH:mm' }}</span>
-        <small class="card-ref">🔖 Réf: {{ payment.reference }}</small>
+      
+      <!-- Ligne 3 : Date et référence -->
+      <div class="card-footer">
+        <span>📅 {{ payment.datePaiement | date:'dd/MM/yyyy à HH:mm' }}</span>
+        <small>🔖 {{ payment.reference }}</small>
       </div>
     </div>
   </div>

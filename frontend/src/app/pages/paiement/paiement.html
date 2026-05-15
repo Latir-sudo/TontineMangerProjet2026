@@ -8,8 +8,8 @@
       <!-- Entête -->
       <div class="bg-[#003366] text-white p-6 text-center">
         <p class="text-sm opacity-90">Montant à payer</p>
-        <p class="text-4xl font-bold">5 000 FCFA</p>
-        <p class="text-sm mt-1">Tontine Famille · Mai 2026</p>
+        <p class="text-4xl font-bold">{{ tontine?.montant }} FCFA</p>
+        <p class="text-sm mt-1">{{ tontine?.nomTontine }} · Mai 2026</p>
       </div>
 
       <!-- Corps -->
@@ -56,8 +56,8 @@
 
         <!-- Infos tontine -->
         <div class="border-t pt-4 text-sm text-gray-500 space-y-1">
-          <p>📍 Localisation : Dakar, Sénégal</p>
-          <p>👑 Administrateur : Fatou Badi</p>
+          <p>📍 Localisation : {{ tontine?.region }}</p>
+          <p>👑 Administrateur : {{ tontine?.admin?.nom }} {{ tontine?.admin?.prenom }}</p>
         </div>
       </div>
     </div>
