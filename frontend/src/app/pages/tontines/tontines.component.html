@@ -6,12 +6,9 @@
       <h1>Liste des tontines</h1>
       <p>Recherchez et découvrez des tontines adaptées à vos besoins.</p>
     </div>
-  </header>
-
-  <section class="search-panel">
-    <input type="search" placeholder="Rechercher une tontine..." />
-    <button class="outline-button" type="button" (click)="toggleFilters()">Filtres</button>
-  </section>
+    <div class="header-actions">
+      <button class="primary-button" routerLink="/tontines/add-member">Ajouter un membre</button>
+      <button class="outline-button" routerLink="/administration">Gérer demandes</button>
 
   <div *ngIf="showFilters" class="filter-bar">
     <button

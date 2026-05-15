@@ -14,6 +14,7 @@ import { AdministrationComponent } from './pages/admin/administration.component'
 import { HistoryComponent } from './pages/history/history.component';
 import { AvailableTontinesComponent } from './pages/available-tontines/available-tontines.component';
 import { BrowseTontinesComponent } from './pages/browse-tontines/browse-tontines.component';
+import { AddMemberComponent } from './pages/tontines/add-member/add-member.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: DashboardComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: 'register', component: SignupComponent },
   { path: 'create', component: CreateTontineComponent },
   { path: 'tontines', component: TontinesComponent },
+  { path: 'tontines/add-member', component: AddMemberComponent },
   { path: 'available-tontines', component: AvailableTontinesComponent },
   { path: 'detail', component: DetailTontineComponent },
   { path: 'payment-preview', component: PaymentPreviewComponent },

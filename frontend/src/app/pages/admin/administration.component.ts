@@ -15,12 +15,10 @@ export class AdministrationComponent {
     { name: 'Oumar Faye', phone: '+221 77 453 23 54', date: '5 mai', status: 'pending' }
   ];
 
-  validations = [
-    { name: 'Fatou Seck', amount: '5 000 FCFA' },
-    { name: 'Moussa Ndiaye', amount: '5 000 FCFA' }
+  payments = [
+    { name: 'Fatou Seck', amount: '5 000 FCFA', status: 'pending' },
+    { name: 'Moussa Ndiaye', amount: '5 000 FCFA', status: 'pending' }
   ];
-
-  constructor(private router: Router) {}
 
   acceptRequest(index: number) {
     this.requests[index].status = 'accepted';
@@ -28,6 +26,10 @@ export class AdministrationComponent {
 
   rejectRequest(index: number) {
     this.requests[index].status = 'rejected';
+  }
+
+  confirmPayment(index: number) {
+    this.payments[index].status = 'confirmed';
   }
 
   getRequestLabel(status: string) {
@@ -40,7 +42,10 @@ export class AdministrationComponent {
     return 'En attente';
   }
 
-  validate() {
-    this.router.navigate(['/validate-payment']);
+  getPaymentLabel(status: string) {
+    if (status === 'confirmed') {
+      return 'Confirmé';
+    }
+    return 'En attente';
   }
 }
