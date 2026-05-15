@@ -1,0 +1,47 @@
+<div class="page-shell preview-shell">
+  <header class="page-header">
+    <button class="back-link" routerLink="/dashboard">← Retour</button>
+    <div>
+      <span class="brand-pill">Paiement</span>
+      <h1>Payer ma cotisation</h1>
+      <p>Vous pouvez revoir le montant et le calendrier avant de cotiser.</p>
+    </div>
+  </header>
+
+  <section class="preview-card">
+    <div class="summary-row">
+      <span>Montant de la cotisation</span>
+      <strong>10 000 FCFA</strong>
+    </div>
+
+    <div class="calendar-card">
+      <h2>Calendrier des bénéficiaires</h2>
+      <div class="beneficiary">
+        <span>1</span>
+        <div>
+          <strong>Amadou Diallo</strong>
+          <span>15 Février 2026</span>
+        </div>
+        <span class="status">Terminé</span>
+      </div>
+      <div class="beneficiary">
+        <span>2</span>
+        <div>
+          <strong>Amy Faye</strong>
+          <span>23 Mars 2026</span>
+        </div>
+        <span class="status">Terminé</span>
+      </div>
+      <div class="beneficiary current">
+        <span>3</span>
+        <div>
+          <strong>Vous</strong>
+          <span>15 Février 2026</span>
+        </div>
+        <span class="status active">En cours</span>
+      </div>
+    </div>
+
+    <button class="primary-button" type="button" (click)="proceed()">Cotiser</button>
+  </section>
+</div>
