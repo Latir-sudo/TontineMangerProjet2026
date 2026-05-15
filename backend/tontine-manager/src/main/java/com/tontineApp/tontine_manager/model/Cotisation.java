@@ -26,4 +26,8 @@ public class Cotisation {
     @JoinColumn(name="membre_id")
     private Membre membre;
 
+    @ManyToOne
+    @JoinColumn(name="tontine_id")
+    private Tontine tontine;
+
 }

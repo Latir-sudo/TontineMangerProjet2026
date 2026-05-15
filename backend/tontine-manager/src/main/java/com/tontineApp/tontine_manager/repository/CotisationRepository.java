@@ -11,4 +11,5 @@ import java.util.List;
 public interface CotisationRepository extends JpaRepository<Cotisation, Integer> {
 
     List<Cotisation> findByMembre_Id(Integer id);
+    List<Cotisation> findByMembre_TontineId(Integer tontineId);
 }

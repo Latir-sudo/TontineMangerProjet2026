@@ -8,38 +8,42 @@
     </div>
   </header>
 
-  <!-- Indicateur de chargement -->
+  <!-- Chargement -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
     <p>Chargement de votre historique...</p>
   </div>
 
-  <!-- Message d'erreur -->
+  <!-- Erreur -->
   <div *ngIf="errorMessage" class="error-state">
     <span class="error-icon">⚠️</span>
     <p>{{ errorMessage }}</p>
-    <button (click)="loadPayments()" class="retry-btn">Réessayer</button>
+    <button (click)="loadHistorique()" class="retry-btn">Réessayer</button>
   </div>
 
   <!-- Résumé des statistiques -->
-  <section *ngIf="!isLoading && !errorMessage" class="history-summary">
-    <div class="summary-card">
-      <span class="summary-label">Total cotisé</span>
-      <strong class="summary-amount">{{ totalAmount | number }} FCFA</strong>
+  <div *ngIf="!isLoading && !errorMessage && stats" class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-label">Total cotisé</span>
+      <strong class="stat-amount">{{ stats.totalPaye | number }} FCFA</strong>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+      </div>
+      <small>Objectif: {{ stats.totalAttendu | number }} FCFA</small>
     </div>
-    <div class="summary-card">
-      <span class="summary-label">Paiements réussis</span>
-      <strong class="summary-success">{{ successCount }}</strong>
+    <div class="stat-card">
+      <span class="stat-label">Paiements réussis</span>
+      <strong class="stat-success">{{ stats.paiementsReussis }}</strong>
     </div>
-    <div class="summary-card">
-      <span class="summary-label">En attente</span>
-      <strong class="summary-pending">{{ pendingCount }}</strong>
+    <div class="stat-card">
+      <span class="stat-label">En attente</span>
+      <strong class="stat-pending">{{ stats.paiementsEnAttente }}</strong>
     </div>
-    <div class="summary-card">
-      <span class="summary-label">Échoués</span>
-      <strong class="summary-failed">{{ failedCount }}</strong>
+    <div class="stat-card">
+      <span class="stat-label">Échoués</span>
+      <strong class="stat-failed">{{ stats.paiementsEchoues }}</strong>
     </div>
-  </section>
+  </div>
 
   <!-- Filtres -->
   <div *ngIf="!isLoading && !errorMessage" class="history-tabs">
@@ -49,35 +53,35 @@
     <button [class.active]="filter === 'failed'" (click)="setFilter('failed')">Échoués</button>
   </div>
 
-  <!-- Liste des cotisations -->
+  <!-- Liste des paiements -->
   <div *ngIf="!isLoading && !errorMessage" class="history-list">
     <div *ngIf="filteredPayments.length === 0" class="empty-state">
       <span class="empty-icon">📭</span>
       <p>Aucune cotisation {{ getFilterLabel() }} à afficher</p>
     </div>
 
-    <article *ngFor="let payment of filteredPayments" class="history-card" [class.pending]="payment.status === 'PENDING'" [class.failed]="payment.status === 'FAILED'">
-      <div class="history-left">
-        <div class="history-icon">
-          <span *ngIf="payment.status === 'SUCCESS'">✅</span>
-          <span *ngIf="payment.status === 'PENDING'">⏳</span>
-          <span *ngIf="payment.status === 'FAILED'">❌</span>
+    <div *ngFor="let payment of filteredPayments" class="history-card" [class.pending]="payment.valide === null" [class.failed]="payment.valide === false">
+      <div class="card-left">
+        <div class="card-icon">
+          <span *ngIf="payment.valide === true">✅</span>
+          <span *ngIf="payment.valide === null">⏳</span>
+          <span *ngIf="payment.valide === false">❌</span>
         </div>
-        <div class="history-info">
-          <strong>{{ payment.title }}</strong>
-          <span class="history-method">{{ getMethodLabel(payment.method) }}</span>
+        <div class="card-info">
+          <strong>{{ payment.titreCotisation }}</strong>
+          <span class="card-method">{{ getMethodLabel(payment.modePaiement) }}</span>
         </div>
       </div>
-      <div class="history-right">
-        <strong class="history-amount">{{ payment.amount | number }} FCFA</strong>
-        <span class="history-status" [class.success]="payment.status === 'SUCCESS'" [class.pending]="payment.status === 'PENDING'" [class.failed]="payment.status === 'FAILED'">
-          {{ getStatusLabel(payment.status) }}
+      <div class="card-right">
+        <strong class="card-amount">{{ payment.montant | number }} FCFA</strong>
+        <span class="card-status" [class]="getStatusClass(payment)">
+          {{ getStatusLabel(payment) }}
         </span>
       </div>
-      <div class="history-meta">
-        <span class="history-date">📅 {{ payment.date | date:'dd/MM/yyyy à HH:mm' }}</span>
-        <small class="history-ref">🔖 Réf: {{ payment.reference }}</small>
+      <div class="card-meta">
+        <span class="card-date">📅 {{ payment.datePaiement | date:'dd/MM/yyyy à HH:mm' }}</span>
+        <small class="card-ref">🔖 Réf: {{ payment.reference }}</small>
       </div>
-    </article>
+    </div>
   </div>
 </div>

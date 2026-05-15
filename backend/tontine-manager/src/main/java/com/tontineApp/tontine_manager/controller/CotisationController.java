@@ -19,7 +19,7 @@ public class CotisationController {
     private final CotisationService cotisationService;
 
     @GetMapping("/user/{id}/tontine/{idTontine}")
-    @PreAuthorize("isAuthenticated() and @cotisationSecurity.isOwner(#authentication, #id, #idTontine)")
+    @PreAuthorize("isAuthenticated() and @cotisationSecurity.isOwner(#authentication, #id, #idTontine) or @tontineSecurity.isAdmin(#authentication,#idTontine)")
     public ResponseEntity<List<CotisationResponse>> getAllCotisations(
             @PathVariable("id") Integer id,
             @PathVariable("idTontine") Integer idTontine,

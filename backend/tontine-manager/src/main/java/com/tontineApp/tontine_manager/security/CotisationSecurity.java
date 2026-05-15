@@ -25,8 +25,6 @@ public class CotisationSecurity {
         String email = authentication.getName();
         return userRepository.findByEmail(email).orElse(null);
     }
-
-    // ✅ NOUVELLE MÉTHODE - appelée par GET /cotisations/user/{id}/tontine/{idTontine}
     public boolean isOwner(Authentication authentication, Integer idUser, Integer idTontine) {
         Users currentUser = getCurrentUser(authentication);
         if (currentUser == null) {

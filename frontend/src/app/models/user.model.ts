@@ -23,5 +23,4 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   token: string;
-  // ⚠️ PAS DE 'user' ici !
 }

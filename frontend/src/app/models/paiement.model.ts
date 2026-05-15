@@ -1,4 +1,5 @@
-// models/cotisation.model.ts
+// models/paiement.model.ts
+
 export enum ModePaiement {
   ORANGE_MONEY = 'ORANGE_MONEY',
   WAVE = 'WAVE',

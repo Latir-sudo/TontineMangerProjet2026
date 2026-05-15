@@ -20,23 +20,19 @@ public class TontineController {
     private final AdhesionService adhesionService;
     private final TontineFilterService tontineFilterService;
 
-    // TOUT LE MONDE AUTHENTIFIÉ : voir toutes les tontines
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public List<TontineResponse> getTontines() {
         return tontineService.getAllTontines();
     }
 
     // MEMBRE ou ADMIN : voir une tontine spécifique
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public TontineResponse getTontine(@PathVariable("id") Integer idTontine) {
         return tontineService.getById(idTontine);
     }
 
     // TOUT LE MONDE AUTHENTIFIÉ : rechercher par région
     @GetMapping("/search")
-    @PreAuthorize("isAuthenticated()")
     public List<TontineResponse> getByRegion(TontineFilter tontineFilter) {
         return tontineFilterService.TontineFilters(tontineFilter);
     }
@@ -51,21 +47,21 @@ public class TontineController {
 
     // ADMIN DE LA TONTINE : modifier
     @PatchMapping("/{id}")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(authentication, #id)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #id)")
     public TontineResponse update(@RequestBody TontineRequest tontineRequest, @PathVariable("id") Integer id) {
         return tontineService.update(tontineRequest, id);
     }
 
     // ADMIN DE LA TONTINE : supprimer
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(authentication, #id)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #id)")
     public void delete(@PathVariable("id") Integer id) {
         tontineService.delete(id);
     }
 
     // ADMIN DE LA TONTINE : voir les demandes d'adhésion
     @GetMapping("/adhesion")
-    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(authentication, #idTontine)")
+    @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #idTontine)")
     public List<AdhesionResponse> getAttenteAdhesion(@RequestParam Integer idTontine) {
         return adhesionService.getAdhesionAttente(idTontine);
     }

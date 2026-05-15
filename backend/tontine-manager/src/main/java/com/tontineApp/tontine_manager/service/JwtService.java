@@ -1,6 +1,5 @@
 package com.tontineApp.tontine_manager.service;
 
-import com.tontineApp.tontine_manager.dto.UserTokenDto;
 import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,36 +27,33 @@ public class JwtService {
     private final String jwtkey = "QiAT1hs6emp0qZZqikMrGcJVl/h8cULpkyJfp/cZlgHhsBtlX3iaACqNMA7EnW55pNN4oqppetIcHdZw7hfVhA==";
     private final long EXPIRATION = 86400000;
 
-    private UserTokenDto convertToTokenDto(Users user) {
-        UserTokenDto dto = new UserTokenDto();
-        dto.setId(user.getId());
-        dto.setNom(user.getNom());
-        dto.setPrenom(user.getPrenom());
-        dto.setEmail(user.getEmail());
-        dto.setTelephone(user.getTelephone());
-        dto.setVille(user.getVille());
-        dto.setDateInscription(user.getDateInscription());
-
-        if (user.getRoles() != null) {
-            dto.setRoles(user.getRoles().stream()
-                    .map(role -> role.getNomRole())
-                    .collect(Collectors.toList()));
-        }
-        return dto;
-    }
-
-    @Transactional(readOnly = true)  // ← AJOUTER @Transactional
+    @Transactional(readOnly = true)
     public String generateToken(UserDetails userDetails) {
-        // ✅ Utiliser findByEmailWithRoles au lieu de findByEmail
         Users user = userRepository.findByEmailWithRoles(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé: " + userDetails.getUsername()));
 
-        UserTokenDto userToken = convertToTokenDto(user);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("user", userToken);
         claims.put("id", user.getId());
         claims.put("email", user.getEmail());
+        claims.put("nom", user.getNom());
+        claims.put("prenom", user.getPrenom());
+        claims.put("telephone", user.getTelephone());
+        claims.put("ville", user.getVille());
+
+        // ✅ Convertir LocalDate en String
+        if (user.getDateInscription() != null) {
+            String dateInscriptionStr = user.getDateInscription()
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            claims.put("dateInscription", dateInscriptionStr);
+        }
+
+        // ✅ Ajouter les rôles (List<String> est supporté)
+        if (user.getRoles() != null) {
+            claims.put("roles", user.getRoles().stream()
+                    .map(role -> role.getNomRole())
+                    .collect(Collectors.toList()));
+        }
 
         return Jwts.builder()
                 .claims(claims)
@@ -90,6 +87,20 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails user) {
         final String username = extractUsername(token);
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
+    }
+
+    public Map<String, Object> extractUserClaims(String token) {
+        Claims claims = extractAllClaims(token);
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("id", claims.get("id"));
+        userInfo.put("email", claims.get("email"));
+        userInfo.put("nom", claims.get("nom"));
+        userInfo.put("prenom", claims.get("prenom"));
+        userInfo.put("telephone", claims.get("telephone"));
+        userInfo.put("ville", claims.get("ville"));
+        userInfo.put("dateInscription", claims.get("dateInscription"));
+        userInfo.put("roles", claims.get("roles"));
+        return userInfo;
     }
 
     public boolean isTokenExpired(String token) {

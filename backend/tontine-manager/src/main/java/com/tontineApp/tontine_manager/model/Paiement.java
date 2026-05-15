@@ -1,6 +1,7 @@
 package com.tontineApp.tontine_manager.model;
 
 
+import com.tontineApp.tontine_manager.enumeration.ModePaiement;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,7 +20,9 @@ public class Paiement {
     @Column(name="date_paiement")
     private Date datePaiement;
     @Column(name="mode_paiement")
-    private String  modePaiement;
+
+    @Enumerated(EnumType.STRING)
+    private ModePaiement modePaiement;
     private String reference;
     private Boolean valide;
 
