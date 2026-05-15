@@ -21,7 +21,7 @@ export const routes: Routes = [
   
   // Routes protégées (nécessitent authentification)
   { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
-  { path: 'tontine-availables', component: AvailableTontines, canActivate: [AuthGuard] },
+  { path: 'tontine-availables', component: AvailableTontines},
   { path: 'historique', component:Historiques, canActivate: [AuthGuard] }, 
   { path: 'tontine/create', component: TontineCreate, canActivate: [AuthGuard] },
   { path: 'paiement/:id', component: Paiement, canActivate: [AuthGuard] },
