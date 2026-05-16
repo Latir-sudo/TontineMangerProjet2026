@@ -47,6 +47,9 @@ public class TontineMapper {
         tontineResponse.setStatutTontine(tontine.getStatutTontine());
         tontineResponse.setNombreMax(tontine.getNombreMax());
         tontineResponse.setNombreMembres(tontine.getNombreMembres());
+        tontineResponse.setNomAdmin(tontine.getAdmin().getNom());
+        tontineResponse.setPrenomAdmin(tontine.getAdmin().getPrenom());
+        tontineResponse.setTelephoneAdmin(tontine.getAdmin().getTelephone());
 
         // ✅ Gérer le cas où admin est null (sécurité)
         if (tontine.getAdmin() != null) {

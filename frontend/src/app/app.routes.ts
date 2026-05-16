@@ -10,6 +10,7 @@ import { AvailableTontines } from './pages/available-tontines/available-tontines
 import { Historiques } from './pages/historiques/historiques';
 import { DetailTontine } from './pages/detail-tontine/detail-tontine';
 import { MesTontines } from './pages/mes-tontines/mes-tontines';
+import { Administration } from './pages/administration/administration';
 
 export const routes: Routes = [
   
@@ -27,7 +28,7 @@ export const routes: Routes = [
   { path: 'paiement/:id', component: Paiement, canActivate: [AuthGuard] },
   { path: 'tontine/:id', component: DetailTontine, canActivate: [AuthGuard] },
   { path: 'mes-tontines', component: MesTontines, canActivate: [AuthGuard] },
-  { path: 'admin/:id', component: DetailTontine, canActivate: [AuthGuard] }, // Route pour la gestion admin d'une tontine spécifique
+  { path: 'admin/:id', component: Administration, canActivate: [AuthGuard] }, // Route pour la gestion admin d'une tontine spécifique
   
   // Redirections
   { path: '', redirectTo: '/accueil', pathMatch: 'full' },

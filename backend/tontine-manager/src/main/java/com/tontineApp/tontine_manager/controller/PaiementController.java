@@ -4,14 +4,17 @@ import com.tontineApp.tontine_manager.dto.PaiementHistoriqueResponse;
 import com.tontineApp.tontine_manager.dto.PaiementRequest;
 import com.tontineApp.tontine_manager.dto.PaiementResponse;
 import com.tontineApp.tontine_manager.dto.PaiementStatsResponse;
+import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.service.PaiementService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/paiements")
@@ -39,11 +42,25 @@ public class PaiementController {
      */
     @GetMapping("/tontine/{tontineId}/historique")
     @PreAuthorize("isAuthenticated() and @tontineSecurity.isMember(#authentication, #tontineId)")
-    public ResponseEntity<List<PaiementHistoriqueResponse>> getHistoriqueByTontine(
+    public ResponseEntity<?> getHistoriqueByTontine(
             @PathVariable Integer tontineId,
             Authentication authentication) {
-        List<PaiementHistoriqueResponse> historique = paiementService.getHistoriqueByTontine(tontineId);
-        return ResponseEntity.ok(historique);
+
+        try {
+            List<PaiementHistoriqueResponse> historique = paiementService.getHistoriqueByTontine(tontineId);
+            // ✅ Retourne 200 même si la liste est vide
+            return ResponseEntity.ok(historique);
+
+        } catch (RessourceNotFoundException e) {
+            System.out.println("Tontine non trouvée: {}"+ e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la récupération des paiements: {}"+ e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Erreur interne du serveur"));
+        }
     }
 
     /**

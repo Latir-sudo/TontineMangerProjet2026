@@ -16,13 +16,10 @@ interface Tontine {
   nombreMax?: number;
   statutTontine?: string;
   dateCreation?: string;
-  admin?: {
-    id: number;
-    nom: string;
-    prenom: string;
-    telephone:string;
-    email?: string;
-  };
+  idAdmin?: number;
+  prenomAdmin?: string;
+  nomAdmin?:string;
+  telephoneAdmin?: string;
 }
 
 interface DemandeAdhesion {
@@ -85,6 +82,7 @@ export class DetailTontine implements OnInit {
     try {
       this.tontine = await this.apiService.get<Tontine>(`/tontine/${id}`);
       console.log('Détails tontine chargés:', this.tontine);
+      console.log('Admin de la tontine:', this.tontine.idAdmin);
     } catch (error) {
       console.error('Erreur chargement détail:', error);
       this.errorMessage = 'Impossible de charger les détails de la tontine';
@@ -124,10 +122,10 @@ export class DetailTontine implements OnInit {
 
     try {
       const currentUser = await this.authService.currentUser();
-      if (currentUser && this.tontine?.admin) {
-        this.isAdmin = currentUser.id === this.tontine.admin.id;
+      if (currentUser && this.tontine?.idAdmin) {
+        this.isAdmin = currentUser.id === this.tontine.idAdmin;
         console.log('Est admin ?', this.isAdmin);
-        console.log('nom dadmin:', this.tontine.admin.nom);
+        console.log('nom admin:', this.tontine.nomAdmin);
       }
     } catch (error) {
       console.error('Erreur vérification admin:', error);
