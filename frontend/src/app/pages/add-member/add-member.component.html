@@ -1,0 +1,48 @@
+<div class="page-shell add-member-shell">
+  <header class="add-header">
+    <button class="back-link" (click)="back()">← Retour</button>
+    <div>
+      <span class="brand-pill">Ajouter un membre</span>
+      <h1>
+        Ajouter un nouveau membre
+        <span *ngIf="tontineName">à {{ tontineName }}</span>
+      </h1>
+      <p>Recherchez par nom ou numéro pour inviter un membre rapidement et facilement.</p>
+      <p *ngIf="tontineId" class="subtext">Tontine #{{ tontineId }}{{ tontineName ? ' — ' + tontineName : '' }}</p>
+    </div>
+  </header>
+
+  <section class="search-area">
+    <div class="search-panel">
+      <div class="field">
+        <label for="filterBySelect">Filtrer par</label>
+        <select id="filterBySelect" [(ngModel)]="filterBy" aria-label="Filtrer les résultats">
+          <option value="name">Nom</option>
+          <option value="phone">Téléphone</option>
+        </select>
+      </div>
+      <div class="field full-width">
+        <label>Rechercher</label>
+        <input [(ngModel)]="query" (keyup.enter)="search()" placeholder="Entrez un nom ou un téléphone" />
+      </div>
+      <button class="primary-button" (click)="search()" [disabled]="loading">Rechercher</button>
+    </div>
+  </section>
+
+  <section class="results">
+    <div *ngIf="loading" class="loading">Chargement…</div>
+    <div *ngIf="!loading && results.length === 0" class="empty">Aucun résultat pour cette recherche</div>
+
+    <ul class="result-list">
+      <li *ngFor="let user of results" class="result-item">
+        <div class="user-info">
+          <div class="user-name">{{ user.name || user.fullName || 'Utilisateur inconnu' }}</div>
+          <div class="user-phone">{{ user.phone || user.telephone || 'Téléphone non disponible' }}</div>
+        </div>
+        <button class="outline-button" (click)="addMember(user)" [disabled]="addedIds.has(user.id || user._id || user.phone)">
+          {{ addedIds.has(user.id || user._id || user.phone) ? 'Ajouté' : 'Ajouter' }}
+        </button>
+      </li>
+    </ul>
+  </section>
+</div>
