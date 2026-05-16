@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -73,7 +73,8 @@ export class Administration implements OnInit {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -89,7 +90,7 @@ export class Administration implements OnInit {
   private async loadData(tontineId: number): Promise<void> {
     this.isLoading = true;
     this.errorMessage = '';
-    
+    this.cdr.detectChanges();
     try {
       // 1. Charger la tontine
       // GET /api/tontine/{id}
@@ -127,6 +128,7 @@ export class Administration implements OnInit {
       this.errorMessage = 'Impossible de charger les données. Vérifiez votre connexion.';
     } finally {
       this.isLoading = false;
+      this.cdr.detectChanges(); 
     }
   }
 

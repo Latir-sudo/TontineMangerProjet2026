@@ -23,6 +23,7 @@ export class Register {
     roles: ['USER']    // rôle par défaut
   };
   
+  confirmPassword: string = ''; // pour la confirmation du mot de passe
   // Liste des localités pour le select
   localites = ['DAKAR', 'THIES', 'SAINT-LOUIS', 'TOUBA', 'ZIGUINCHOR', 'KAOLACK', 'TAMBACOUNDA'];
   
@@ -74,6 +75,8 @@ export class Register {
            this.userData.prenom.trim() !== '' &&
            this.userData.email.trim() !== '' &&
            this.userData.telephone.trim() !== '' &&
-           this.userData.password.trim().length >= 8;
+           this.userData.password.trim().length >= 8 &&
+           
+           this.userData.password === this.confirmPassword;
   }
 }

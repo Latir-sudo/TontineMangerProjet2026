@@ -61,6 +61,8 @@
         />
       </label>
 
+
+
       <label>
         <span>Mot de passe</span>
         <input 
@@ -68,6 +70,18 @@
           placeholder="Minimum 8 caractères" 
           [(ngModel)]="userData.password" 
           name="password" 
+          required 
+          minlength="8"
+        />
+      </label>
+
+      <label>
+        <span>Confirmer le mot de passe</span>
+        <input 
+          type="password" 
+          placeholder="Minimum 8 caractères" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword" 
           required 
           minlength="8"
         />

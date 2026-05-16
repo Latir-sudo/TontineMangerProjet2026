@@ -10,7 +10,10 @@ interface Tontine {
   id:number;
   nomTontine:string;
   montant:number;
-  admin?:{nom:string;prenom:string};
+  idAdmin?:number;
+  prenomAdmin?:string;
+  nomAdmin?:string;
+  telephoneAdmin?:string;
   region?:string;
 
 }
