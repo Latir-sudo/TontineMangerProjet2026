@@ -138,7 +138,7 @@ private async loadDemandesAdhesion(){
   try{
     const demandes = await this.apiService.get<DemandeAdhesion[]>(`/tontine/${this.tontine.id}/adhesion`);
     this.demandes = demandes;
-    console.log('Deamanes d\'adhésion chargées:',this.demandes);
+    console.log('Demandes d\'adhésion chargées:',this.demandes);
   } catch (error) {
     console.error('Erreur chargement demandes adhesion:', error);
     this.demandes = [];

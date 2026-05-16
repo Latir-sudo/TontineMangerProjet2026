@@ -35,6 +35,8 @@ public class AdhesionService {
     private final AdhesionMapper adhesionMapper;
 
     public List<AdhesionResponse> getAdhesionAttente(Integer idTontine) {
+        // débogage pour voir si mon controller a un problème ou non
+        System.out.println("adhesion en attente en cours");
         log.info("Récupération des adhésions en attente pour la tontine {}", idTontine);
 
         if (!tontineRepository.existsById(idTontine)) {
@@ -64,7 +66,7 @@ public class AdhesionService {
         }
 
         // vérifier si l'utilisateur n'est pas déjà membre de la tontine
-        if((adhesionRepository.existsByUser_idAndTontine_IdStatut(idUser,idTontine,ACCEPTEE))){
+        if((adhesionRepository.existsByUser_idAndTontine_IdAndStatut(idUser,idTontine,ACCEPTEE))){
             throw new UnAuthorizedException("utilisateur déjà membre");
         }
 

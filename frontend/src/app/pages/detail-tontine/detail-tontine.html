@@ -1,10 +1,10 @@
-<div class="page-shell detail-shell">
-  <header class="detail-header">
-    <button class="back-link" routerLink="/available-tontines">← Retour</button>
+<div class="h-auto w-full px-4 py-6">
+  <header class="">
+    <button class="bg-[#003366] text-white px-4 py-3 rounded-lg mb-8 cursor-pointer" routerLink="/available-tontines">← Retour</button>
     <div *ngIf="!isLoading && tontine">
-      <span class="brand-pill">Détail tontine</span>
-      <h1>{{ tontine.nomTontine }}</h1>
-      <p>{{ tontine.descriptionTontine || 'Rejoignez cette tontine et commencez à épargner' }}</p>
+      <p class="text-xl font-extrabold mb-4 text-[#003366]">{{ tontine.nomTontine }}</p>
+  
+    
     </div>
     <div *ngIf="isLoading">
       <h1>Chargement...</h1>
@@ -19,75 +19,45 @@
 
   <!-- Détails de la tontine -->
   <section class="detail-card" *ngIf="!isLoading && tontine">
-    <div class="detail-top">
-      <div>
-        <p class="detail-type">{{ tontine.categorie || 'Tontine générale' }}</p>
-        <h2>{{ tontine.nomTontine }}</h2>
+    <div class="flex gap-6 w-auto h-auto px-10 py-8" >
+      <div class="montant flex flex-col justify-center items-center w-40 px-3 py-4 shadow-lg rounded-lg">
+        <img src="assets/image/argent.png" alt="">
+        <h3 class="text-[#003366] py-2 font-semibold">Montant</h3>
+        <h2>{{ tontine.montant | number }} FCFA</h2>
       </div>
-      <span class="amount-flag">{{ tontine.montant | number }} FCFA</span>
+      <div class="frequence flex flex-col justify-center items-center w-40 px-3 py-4 shadow-lg rounded-lg">
+        <i class="fa-thin fa-bolt"></i>
+        <h3 class="text-[#003366] py-2 font-semibold">Fréquence</h3>
+        <h2>{{ tontine.frequence }}</h2>
+        <i class="fa-thin fa-bolt"></i>
+      </div>
+
+      <div class="membre flex flex-col justify-center items-center w-40 px-3 py-4 shadow-lg rounded-lg">
+        <img src="" alt="">
+        <h3 class="text-[#003366] py-2 font-semibold">Membres</h3>
+        <h2>{{ tontine.nombreMembres }}</h2>
+      </div>
+      <div class="debut flex flex-col justify-center items-center w-40 px-3 py-4 shadow-lg rounded-lg">
+        <i class="fa-light fa-calendar text-[#003366]"></i>
+        <h3 class="text-[#003366] py-2 font-semibold">Début</h3>
+        <h2>15 Mai</h2>
+      </div>
+
     </div>
 
-    <div class="detail-grid">
-      <div class="info-box">
-        <strong>{{ tontine.nombreMembres || 0 }}/20</strong>
-        <span>Membres</span>
+    <div class="description text-lg w-100 h-auto mt-8 py-4 px-3 flex flex-col justify-center  shadow-lg rounded-lg">
+      <div class="mb-5 flex justify-between">
+        <p class="text-lg font-semibold ">Description</p>
+        <img src="./detail-tontine.html" alt="">
       </div>
-      <div class="info-box">
-        <strong>{{ tontine.frequence || 'Mensuel' }}</strong>
-        <span>Fréquence</span>
-      </div>
-      <div class="info-box">
-        <strong>À venir</strong>
-        <span>Prochain paiement</span>
-      </div>
-    </div>
-   <!-- Barre de progression -->
-<<div class="progress-section" *ngIf="tontine.nombreMembres">
-  <div class="progress-bar">
-    <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
-  </div>
-  <span class="progress-text">
-    {{ tontine.nombreMembres }} / {{ tontine.nombreMax || 20 }} membres 
-    ({{ getProgressPercentage() | number:'1.0-0' }}% remplie)
-  </span>
-</div>
-
-    <div class="description-card">
-      <p>{{ tontine.descriptionTontine || 'Aucune description disponible.' }}</p>
+      <p class="italic text-[16px]">{{ tontine.descriptionTontine }}</p>
     </div>
 
-    <div class="detail-meta">
-      <div>
-        <strong>Localisation</strong>
-        <span>{{ tontine.region || 'Sénégal' }}</span>
-      </div>
-      <div>
-        <strong>Administrateur</strong>
-        <span>{{ tontine.admin?.prenom || 'Admin' }} {{ tontine.admin?.nom || '' }}</span>
-      </div>
-      <div>
-        <strong>Statut</strong>
-        <span>{{ tontine.statutTontine || 'Active' }}</span>
-      </div>
-    </div>
+    <!--information administrateur et lieu de la tontine-->
 
-    <button 
-      *ngIf="!isJoined" 
-      class="primary-button" 
-      type="button" 
-      (click)="join()"
-    >
-      Rejoindre cette tontine
-    </button>
-    
-    <button 
-      *ngIf="isJoined" 
-      class="joined-button" 
-      type="button" 
-      disabled
-    >
-      ✓ Vous êtes déjà membre
-    </button>
+    <div class="">
+
+    </div>
   </section>
 
   <!-- Squelette de chargement -->
