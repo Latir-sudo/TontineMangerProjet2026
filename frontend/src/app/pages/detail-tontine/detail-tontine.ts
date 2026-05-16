@@ -187,7 +187,7 @@ export class DetailTontine implements OnInit {
 
   gererMembres(): void {
     if (!this.tontine) return;
-    this.router.navigate(['/tontine', this.tontine.id, 'membres']);
+    this.router.navigate(['/tontine/gestion-membres', this.tontine.id]);
   }
 
   // Modifie la méthode gererDemandes()
