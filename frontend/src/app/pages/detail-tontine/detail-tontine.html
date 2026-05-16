@@ -42,7 +42,6 @@
       
       <!-- Montant -->
       <div class="montant flex flex-col justify-center items-center w-40 px-3 py-4 shadow-lg rounded-lg bg-white">
-        <img src="assets/image/argent.png" alt="Montant" class="w-12 h-12 mb-2" *ngIf="!imageError" (error)="imageError = true">
         <i *ngIf="imageError" class="fa-solid fa-money-bill-wave text-[#FF7F50] text-3xl mb-2"></i>
         <h3 class="text-[#003366] py-2 font-semibold">Montant</h3>
         <h2 class="text-xl font-bold">{{ tontine.montant | number }} FCFA</h2>

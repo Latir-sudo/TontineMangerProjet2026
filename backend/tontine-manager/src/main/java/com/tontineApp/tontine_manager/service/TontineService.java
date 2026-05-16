@@ -1,6 +1,7 @@
 package com.tontineApp.tontine_manager.service;
 
 
+import com.tontineApp.tontine_manager.dto.MembreRequest;
 import com.tontineApp.tontine_manager.dto.TontineRequest;
 import com.tontineApp.tontine_manager.dto.TontineResponse;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
@@ -23,6 +24,7 @@ public class TontineService{
     private final TontineRepository tontineRepository;
     private final TontineMapper tontineMapper;
     private final UserRepository userRepository;
+    private final MembreService membreService;
 
    public List<TontineResponse> getAllTontines() {
        return tontineRepository.findAll().stream()
@@ -75,6 +77,13 @@ public class TontineService{
 
         Tontine tontine = tontineMapper.toTontine(tontineRequest);
         tontine.setAdmin(admin);  // ← L'utilisateur connecté devient admin
+
+        // l'admin devient membree de la tontine qu'il crée
+
+        Users user= userRepository.findByEmail(adminEmail).orElseThrow(()->new RessourceNotFoundException("utilisateur avec l'email"+adminEmail));
+        MembreRequest membreRequest=new MembreRequest(user.getId(),tontine.getId());
+        membreService.ajouterUtilisateurATontine(membreRequest);
+
         tontine.setDateCreation(LocalDate.now());
         tontine.setStatutTontine("active");
         tontine.setNombreMembres(0);

@@ -20,6 +20,8 @@ interface Tontine {
     id: number;
     nom: string;
     prenom: string;
+    telephone:string;
+    email?: string;
   };
 }
 
@@ -125,6 +127,7 @@ export class DetailTontine implements OnInit {
       if (currentUser && this.tontine?.admin) {
         this.isAdmin = currentUser.id === this.tontine.admin.id;
         console.log('Est admin ?', this.isAdmin);
+        console.log('nom dadmin:', this.tontine.admin.nom);
       }
     } catch (error) {
       console.error('Erreur vérification admin:', error);
