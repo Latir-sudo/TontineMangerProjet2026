@@ -30,15 +30,15 @@
       <div class="list-group">
         <article *ngFor="let request of requests; let i = index" class="list-item">
           <div>
-            <strong>{{ request.name }}</strong>
-            <span>{{ request.phone }}</span>
-            <small>Demande du {{ request.date }}</small>
+            <strong>{{ request.prenomUser }} {{ request.nomUser }}</strong>
+            <span>{{ request.telephoneUser }}</span>
+            <small>Demande du {{ request.dateAdhesion }}</small>
           </div>
           <div class="item-actions">
-            <button type="button" class="primary-button" (click)="acceptRequest(i)" [disabled]="request.status !== 'pending'">Accepter</button>
-            <button type="button" class="secondary-button" (click)="rejectRequest(i)" [disabled]="request.status !== 'pending'">Refuser</button>
+            <button type="button" class="primary-button" (click)="acceptRequest(i)" [disabled]="request.statut !== 'pending'">Accepter</button>
+            <button type="button" class="secondary-button" (click)="rejectRequest(i)" [disabled]="request.statut !== 'pending'">Refuser</button>
           </div>
-          <span class="pill {{ request.status }}">{{ getRequestLabel(request.status) }}</span>
+          <span class="pill {{ request.statut }}">{{ getRequestLabel(request.statut) }}</span>
         </article>
       </div>
     </div>
@@ -51,13 +51,13 @@
       <div class="list-group">
         <article *ngFor="let payment of payments; let i = index" class="list-item">
           <div>
-            <strong>{{ payment.name }}</strong>
-            <span>{{ payment.amount }}</span>
+            <strong>{{ payment.prenomUser }} {{ payment.nomUser }}</strong>
+            <span>{{ payment.montant }}</span>
           </div>
           <div class="item-actions">
-            <button type="button" class="primary-button" (click)="confirmPayment(i)" [disabled]="payment.status !== 'pending'">Confirmer</button>
+            <button type="button" class="primary-button" (click)="confirmPayment(i)" [disabled]="payment.statut !== 'pending'">Confirmer</button>
           </div>
-          <span class="pill {{ payment.status }}">{{ getPaymentLabel(payment.status) }}</span>
+          <span class="pill {{ payment.statut }}">{{ getPaymentLabel(payment.statut) }}</span>
         </article>
       </div>
     </div>

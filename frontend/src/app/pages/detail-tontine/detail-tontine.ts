@@ -161,17 +161,7 @@ export class DetailTontine implements OnInit {
     }
   }
 
-  async rejeterDemande(demandeId: number) {
-    try {
-      await this.apiService.put(`/tontine/adhesion/${demandeId}/reject`, {});
-      alert('❌ Demande rejetée');
-      await this.loadDemandesAdhesion();
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Erreur rejet:', error);
-      alert('❌ Erreur lors du rejet');
-    }
-  }
+ 
 
   // ✅ Méthode pour réinitialiser l'erreur d'image (optionnel)
   onImageError() {
@@ -202,8 +192,12 @@ export class DetailTontine implements OnInit {
     this.router.navigate(['/tontine', this.tontine.id, 'membres']);
   }
 
-  gererDemandes(): void {
-    if (!this.tontine) return;
-    this.router.navigate(['/tontine', this.tontine.id, 'demandes']);
-  }
+  // Modifie la méthode gererDemandes()
+gererDemandes(): void {
+  if (!this.tontine) return;
+  
+  // Navigation avec l'ID de la tontine
+  this.router.navigate(['/admin', this.tontine.id]);
+}
+
 }

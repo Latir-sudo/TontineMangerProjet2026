@@ -15,6 +15,9 @@ public class TontineResponse {
     private String frequence;
     private Integer montant;
     private Integer idAdmin;
+    private Integer nomAdmin;
+    private Integer prenomAdmin;
+    private Integer telephoneAdmin;
     private String descriptionTontine;
     private String categorie;
     private String region;

@@ -71,6 +71,7 @@ public class TontineService{
         return getTontinesByUserId(user.getId());
     }
 
+    @Transactional
     public TontineResponse save(TontineRequest tontineRequest, String adminEmail) {
         Users admin = userRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new RessourceNotFoundException("Utilisateur non trouvé"));

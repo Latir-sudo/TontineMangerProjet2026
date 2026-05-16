@@ -6,7 +6,7 @@
       </button>
       
       <!-- Boutons Admin (uniquement si l'utilisateur est admin) -->
-      <section *ngIf="isAdmin" class="flex gap-2 mb-8">
+      <section *ngIf="!isAdmin" class="flex gap-2 mb-8">
         <button class="bg-[#FF7F50] text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition cursor-pointer flex items-center gap-2" (click)="gererMembres()">
           <i class="fa-solid fa-user-plus"></i>
           Ajouter membre
