@@ -18,20 +18,19 @@ interface Tontine {
   dateCreation?: string;
   idAdmin?: number;
   prenomAdmin?: string;
-  nomAdmin?:string;
+  nomAdmin?: string;
   telephoneAdmin?: string;
 }
 
 interface DemandeAdhesion {
-  id: number;
-  membre: {
-    id: number;
-    nom: string;
-    prenom: string;
-    email?: string;
-  };
-  statut: 'PENDING' | 'APPROVED' | 'REJECTED';
-  dateDemande: string;
+  idUser: number;
+  idTontine?: number;
+  prenomUser: string;
+  nomUser: string;
+  telephoneUser: string;
+  emailUser: string;
+  dateAdhesion: string;
+  statut: 'ATTENTE' | 'ACCEPTEE' | 'REJETEE';
 }
 
 @Component({
@@ -49,7 +48,8 @@ export class DetailTontine implements OnInit {
   isJoined = false;
   isAdmin = false;
   demandes: DemandeAdhesion[] = [];
-  imageError = false;  // ✅ AJOUTÉ : pour gérer l'erreur de chargement d'image
+  showDemandesModal = false;
+  imageError = false;
 
   constructor(
     private apiService: ApiService,
@@ -82,8 +82,7 @@ export class DetailTontine implements OnInit {
     try {
       this.tontine = await this.apiService.get<Tontine>(`/tontine/${id}`);
       console.log('Détails tontine chargés:', this.tontine);
-      console.log('Admin de la tontine:', this.tontine.idAdmin);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur chargement détail:', error);
       this.errorMessage = 'Impossible de charger les détails de la tontine';
     } finally {
@@ -98,7 +97,7 @@ export class DetailTontine implements OnInit {
       const mesTontines = await this.apiService.get<Tontine[]>('/tontine/mes-tontines');
       this.isJoined = mesTontines.some(t => t.id === this.tontine?.id);
       console.log('Est membre ?', this.isJoined);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur vérification adhésion:', error);
       this.isJoined = false;
     }
@@ -106,12 +105,26 @@ export class DetailTontine implements OnInit {
 
   async join() {
     if (!this.tontine) return;
+    
     try {
-      await this.apiService.post('/tontine/adhesion', { idTontine: this.tontine.id });
+      const currentUser = await this.authService.currentUser();
+      
+      if (!currentUser || !currentUser.id) {
+        alert('❌ Vous devez être connecté pour adhérer à une tontine');
+        return;
+      }
+      
+      const adhesionRequest = {
+        idUser: currentUser.id,
+        dateAdhesion: new Date().toISOString().split('T')[0]
+      };
+      
+      console.log('Envoi de la demande:', adhesionRequest);
+      await this.apiService.post(`/tontine/${this.tontine.id}/adhesion`, adhesionRequest);
       alert('✅ Demande d\'adhésion envoyée avec succès !');
-      this.isJoined = true;
+      await this.checkIfJoined();
       this.cdr.detectChanges();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur adhésion:', error);
       alert('❌ Erreur lors de la demande d\'adhésion');
     }
@@ -119,15 +132,13 @@ export class DetailTontine implements OnInit {
 
   private async checkIfAdmin() {
     if (!this.tontine) return;
-
     try {
       const currentUser = await this.authService.currentUser();
       if (currentUser && this.tontine?.idAdmin) {
         this.isAdmin = currentUser.id === this.tontine.idAdmin;
         console.log('Est admin ?', this.isAdmin);
-        console.log('nom admin:', this.tontine.nomAdmin);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur vérification admin:', error);
       this.isAdmin = false;
     }
@@ -137,37 +148,77 @@ export class DetailTontine implements OnInit {
     if (!this.tontine || !this.isAdmin) return;
 
     try {
-      const demandes = await this.apiService.get<DemandeAdhesion[]>(`/tontine/${this.tontine.id}/adhesion`);
-      this.demandes = demandes.filter(d => d.statut === 'PENDING');
-      console.log('Demandes d\'adhésion en attente:', this.demandes);
-    } catch (error) {
+      const demandes = await this.apiService.get<any[]>(`/tontine/${this.tontine.id}/adhesion`);
+      console.log('Demandes reçues:', demandes);
+      this.demandes = demandes.filter(d => d.statut === 'ATTENTE');
+      console.log('Demandes en attente:', this.demandes);
+    } catch (error: any) {
       console.error('Erreur chargement demandes:', error);
       this.demandes = [];
     }
   }
 
-  async approuverDemande(demandeId: number) {
+  async gererDemandes() {
+    if (!this.tontine) return;
+    await this.loadDemandesAdhesion();
+    this.showDemandesModal = true;
+    this.cdr.detectChanges();
+  }
+
+  fermerModal() {
+    this.showDemandesModal = false;
+    this.cdr.detectChanges();
+  }
+
+  async approuverDemande(demande: DemandeAdhesion) {
+    if (!this.tontine) return;
+    
     try {
-      await this.apiService.put(`/tontine/adhesion/${demandeId}/approve`, {});
-      alert('✅ Demande approuvée avec succès !');
+      console.log('Approbation de la demande:', demande);
+      await this.apiService.patch(`/tontine/${this.tontine.id}/adhesion?userId=${demande.idUser}`, {
+        statut: 'ACCEPTEE'
+      });
+      alert(`✅ ${demande.prenomUser} ${demande.nomUser} est maintenant membre de la tontine !`);
       await this.loadDemandesAdhesion();
-      await this.loadTontineDetail(this.tontine!.id);
+      await this.loadTontineDetail(this.tontine.id);
+      if (this.demandes.length === 0) {
+        this.fermerModal();
+      }
       this.cdr.detectChanges();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur approbation:', error);
       alert('❌ Erreur lors de l\'approbation');
     }
   }
 
- 
+  async rejeterDemande(demande: DemandeAdhesion) {
+    if (!this.tontine) return;
+    
+    if (!confirm(`Êtes-vous sûr de vouloir rejeter la demande de ${demande.prenomUser} ${demande.nomUser} ?`)) {
+      return;
+    }
+    
+    try {
+      await this.apiService.patch(`/tontine/${this.tontine.id}/adhesion?userId=${demande.idUser}`, {
+        statut: 'REJETEE'
+      });
+      alert(`❌ Demande de ${demande.prenomUser} ${demande.nomUser} rejetée.`);
+      await this.loadDemandesAdhesion();
+      if (this.demandes.length === 0) {
+        this.fermerModal();
+      }
+      this.cdr.detectChanges();
+    } catch (error: any) {
+      console.error('Erreur rejet:', error);
+      alert('❌ Erreur lors du rejet');
+    }
+  }
 
-  // ✅ Méthode pour réinitialiser l'erreur d'image (optionnel)
   onImageError() {
     this.imageError = true;
     this.cdr.detectChanges();
   }
 
-  // ✅ Méthode pour réessayer de charger l'image (optionnel)
   retryImage() {
     this.imageError = false;
     this.cdr.detectChanges();
@@ -189,13 +240,4 @@ export class DetailTontine implements OnInit {
     if (!this.tontine) return;
     this.router.navigate(['/tontine/gestion-membres', this.tontine.id]);
   }
-
-  // Modifie la méthode gererDemandes()
-gererDemandes(): void {
-  if (!this.tontine) return;
-  
-  // Navigation avec l'ID de la tontine
-  this.router.navigate(['/admin', this.tontine.id]);
-}
-
 }

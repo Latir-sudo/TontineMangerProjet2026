@@ -13,5 +13,6 @@ public class MembreRequest {
 
     private Integer idUser;
     private Integer idTontine;
+    private LocalDate dateAdhesion;
 
 }

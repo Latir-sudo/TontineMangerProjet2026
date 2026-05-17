@@ -11,10 +11,12 @@
           <i class="fa-solid fa-user-plus"></i>
           Ajouter membre
         </button>
-        <button class="bg-[#003366] text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition cursor-pointer flex items-center gap-2" (click)="gererDemandes()">
+        <button class="bg-[#003366] text-white px-4 py-3 rounded-lg hover:bg-opacity-90 transition cursor-pointer flex items-center gap-2 relative" (click)="gererDemandes()">
           <i class="fa-solid fa-list-check"></i>
           Gérer les demandes
+          <span *ngIf="demandes.length > 0" class="badge-demandes">{{ demandes.length }}</span>
         </button>
+
       </section>
     </div>
     
@@ -142,4 +144,43 @@
     <i class="fa-solid fa-handshake"></i>
     Rejoindre cette tontine
   </button>
+
+  <!-- Modal pour gérer les demandes d'adhésion -->
+<div *ngIf="showDemandesModal" class="modal-overlay" (click)="fermerModal()"></div>
+<div *ngIf="showDemandesModal" class="modal-container">
+  <div class="modal-header">
+    <h3>📋 Demandes d'adhésion en attente</h3>
+    <button class="modal-close" (click)="fermerModal()">✕</button>
+  </div>
+  
+  <div class="modal-body">
+    <!-- Aucune demande -->
+    <div *ngIf="demandes.length === 0" class="no-demandes">
+      <p>📭 Aucune demande d'adhésion en attente</p>
+    </div>
+    
+    <!-- Liste des demandes -->
+    <div *ngFor="let demande of demandes" class="demande-card">
+      <div class="demande-info">
+        <div class="demande-nom">
+          <strong>{{ demande.prenomUser }} {{ demande.nomUser }}</strong>
+        </div>
+        <div class="demande-details">
+          <div>📧 {{ demande.emailUser }}</div>
+          <div>📞 {{ demande.telephoneUser }}</div>
+          <div>📅 Demandé le: {{ demande.dateAdhesion | date:'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+      
+      <div class="demande-actions">
+        <button class="btn-approuver" (click)="approuverDemande(demande)">
+          ✅ Approuver
+        </button>
+        <button class="btn-rejeter" (click)="rejeterDemande(demande)">
+          ❌ Rejeter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
