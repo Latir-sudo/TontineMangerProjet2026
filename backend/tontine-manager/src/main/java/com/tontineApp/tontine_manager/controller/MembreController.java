@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,6 +18,12 @@ import java.util.Map;
 public class MembreController {
 
     private final MembreService membreService;
+
+    @GetMapping("/tontine/{idTontine}")
+    @PreAuthorize("isAuthenticated()")
+    public List<MembreRequest> getMembresByTontine(@PathVariable Integer idTontine) {
+        return membreService.getMembresByTontine(idTontine);
+    }
 
     // ADMIN DE LA TONTINE : ajouter un membre
     @PostMapping

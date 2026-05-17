@@ -8,20 +8,20 @@ import com.tontineApp.tontine_manager.enumeration.StatutAdhesion;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.exception.UnAuthorizedException;
 import com.tontineApp.tontine_manager.mapper.AdhesionMapper;
-import com.tontineApp.tontine_manager.mapper.MembreMapper;
 import com.tontineApp.tontine_manager.model.Adhesion;
 import com.tontineApp.tontine_manager.model.Tontine;
 import com.tontineApp.tontine_manager.repository.AdhesionRepository;
-import com.tontineApp.tontine_manager.repository.MembreRepository;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ACCEPTEE;
+import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ATTENTE;
 
 @Slf4j
 @Service
@@ -30,9 +30,8 @@ public class AdhesionService {
 
     private final AdhesionRepository adhesionRepository;
     private final TontineRepository tontineRepository;
-    private final MembreMapper membreMapper;
-    private final MembreRepository membreRepository;
     private final AdhesionMapper adhesionMapper;
+    private final MembreService membreService;
 
     public List<AdhesionResponse> getAdhesionAttente(Integer idTontine) {
         // débogage pour voir si mon controller a un problème ou non
@@ -66,7 +65,7 @@ public class AdhesionService {
         }
 
         // vérifier si l'utilisateur n'est pas déjà membre de la tontine
-        if((adhesionRepository.existsByUser_idAndTontine_IdAndStatut(idUser,idTontine,ACCEPTEE))){
+        if((adhesionRepository.existsByUser_IdAndTontine_IdAndStatut(idUser,idTontine,ACCEPTEE))){
             throw new UnAuthorizedException("utilisateur déjà membre");
         }
 
@@ -83,7 +82,7 @@ public class AdhesionService {
             MembreRequest membreRequest = new MembreRequest();
             membreRequest.setIdTontine(idTontine);
             membreRequest.setIdUser(idUser);
-            membreRepository.save(membreMapper.toMembre(membreRequest));
+            membreService.ajouterUtilisateurATontine(membreRequest);
         }
 
         Adhesion saved = adhesionRepository.save(adhesion);
@@ -105,8 +104,30 @@ public class AdhesionService {
 
         Adhesion adhesion = adhesionMapper.toAdhesion(request);
         adhesion.setTontine(tontine);
-
         Adhesion saved = adhesionRepository.save(adhesion);
+        log.info("Demande d'adhésion créée avec succès, id={}", saved.getId());
+
+        return adhesionMapper.toAdhesionResponse(saved);
+    }
+
+    @Transactional
+    public AdhesionResponse ajouterUser(AdhesionRequest request, Integer idTontine) {
+
+        if (request == null) {
+            throw new IllegalArgumentException("La requête d'adhésion ne peut pas être null");
+        }
+
+        Tontine tontine = tontineRepository.findById(idTontine)
+                .orElseThrow(() -> new RessourceNotFoundException("Tontine " + idTontine + " non trouvée"));
+
+        Adhesion adhesion = adhesionMapper.toAdhesion(request);
+        adhesion.setTontine(tontine);
+        Adhesion saved = adhesionRepository.save(adhesion);
+
+        // on insérer dans la table membre
+        UpdateStatusDto statusDto=new UpdateStatusDto(ACCEPTEE, LocalDate.now());
+        this.traiterAdhesion(request.getIdUser(),statusDto,idTontine);
+
         log.info("Demande d'adhésion créée avec succès, id={}", saved.getId());
 
         return adhesionMapper.toAdhesionResponse(saved);

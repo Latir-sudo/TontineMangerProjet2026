@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +45,20 @@ public class MembreService {
 
         // 4. Créer le membre
        Membre membre = membreMapper.toMembre(request);
-        tontine.setNombreMembres(tontine.getNombreMembres()+1);
+        tontine.setNombreMembres((tontine.getNombreMembres() == null ? 0 : tontine.getNombreMembres()) + 1);
         return membreMapper.toMembreRequest(membreRepository.save(membre));
 
+    }
+
+    public List<MembreRequest> getMembresByTontine(Integer idTontine) {
+        if (!tontineRepository.existsById(idTontine)) {
+            throw new RessourceNotFoundException("tontine non trouvée");
+        }
+
+        return membreRepository.findAllByTontine_Id(idTontine)
+                .stream()
+                .map(membreMapper::toMembreRequest)
+                .toList();
     }
 
 

@@ -13,5 +13,5 @@ public interface AdhesionRepository extends JpaRepository<Adhesion,Integer> {
 
     public List<Adhesion> findByStatutAndTontine_Id(StatutAdhesion statutAdhesion, Integer tontine);
     public Optional<Adhesion> findByUser_IdAndTontine_Id(Integer user_id, Integer tontine);
-    boolean existsByUser_idAndTontine_IdAndStatut(Integer idUser,Integer idTontine,StatutAdhesion statutAdhesion);
+    boolean existsByUser_IdAndTontine_IdAndStatut(Integer idUser,Integer idTontine,StatutAdhesion statutAdhesion);
 }

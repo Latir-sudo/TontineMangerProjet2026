@@ -13,6 +13,7 @@ public interface MembreRepository extends JpaRepository<Membre, Integer> {
     Optional<Membre> findByTontine_IdAndUser_Id(Integer idTontine,Integer idUser);
     public List<Membre> findAllByUser_Id(Integer id);
     public List<Membre> findAllByTontine_Id(Integer id);
-  boolean existsByTontine_IdAndUser_Id(Integer tontineId, Integer userId);
+    long countByTontine_Id(Integer tontineId);
+    boolean existsByTontine_IdAndUser_Id(Integer tontineId, Integer userId);
 
 }

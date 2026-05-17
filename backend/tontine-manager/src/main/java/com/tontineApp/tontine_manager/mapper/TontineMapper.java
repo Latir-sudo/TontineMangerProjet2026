@@ -3,10 +3,15 @@ package com.tontineApp.tontine_manager.mapper;
 import com.tontineApp.tontine_manager.dto.TontineRequest;
 import com.tontineApp.tontine_manager.dto.TontineResponse;
 import com.tontineApp.tontine_manager.model.Tontine;
+import com.tontineApp.tontine_manager.repository.MembreRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TontineMapper {
+
+    private final MembreRepository membreRepository;
 
     public TontineRequest toTontineRequest(Tontine tontine) {
         TontineRequest response = new TontineRequest();
@@ -46,17 +51,19 @@ public class TontineMapper {
         tontineResponse.setRegion(tontine.getRegionTontine());
         tontineResponse.setStatutTontine(tontine.getStatutTontine());
         tontineResponse.setNombreMax(tontine.getNombreMax());
-        tontineResponse.setNombreMembres(tontine.getNombreMembres());
-        tontineResponse.setNomAdmin(tontine.getAdmin().getNom());
-        tontineResponse.setPrenomAdmin(tontine.getAdmin().getPrenom());
-        tontineResponse.setTelephoneAdmin(tontine.getAdmin().getTelephone());
-
+        tontineResponse.setNombreMembres(Math.toIntExact(membreRepository.countByTontine_Id(tontine.getId())));
         // ✅ Gérer le cas où admin est null (sécurité)
         if (tontine.getAdmin() != null) {
             tontineResponse.setIdAdmin(tontine.getAdmin().getId());
+            tontineResponse.setNomAdmin(tontine.getAdmin().getNom());
+            tontineResponse.setPrenomAdmin(tontine.getAdmin().getPrenom());
+            tontineResponse.setTelephoneAdmin(tontine.getAdmin().getTelephone());
 
         } else {
             tontineResponse.setIdAdmin(null);
+            tontineResponse.setNomAdmin(null);
+            tontineResponse.setPrenomAdmin(null);
+            tontineResponse.setTelephoneAdmin(null);
 
         }
 

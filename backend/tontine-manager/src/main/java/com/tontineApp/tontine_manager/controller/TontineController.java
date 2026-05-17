@@ -73,6 +73,12 @@ public class TontineController {
         return adhesionService.save(adhesionRequest,idTontine);
     }
 
+    @PostMapping("/{idTontine}/ajouter")
+    @PreAuthorize("isAuthenticated()")
+    public AdhesionResponse ajouterByAdmin(@PathVariable Integer idTontine,@RequestBody AdhesionRequest adhesionRequest){
+        return adhesionService.ajouterUser(adhesionRequest,idTontine);
+    }
+
     // ADMIN DE LA TONTINE : traiter une demande d'adhésion
     @PatchMapping("/{idTontine}/adhesion")
     @PreAuthorize("isAuthenticated() and @tontineSecurity.isAdmin(#authentication, #idTontine)")

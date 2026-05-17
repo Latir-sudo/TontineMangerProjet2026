@@ -5,7 +5,6 @@ import com.tontineApp.tontine_manager.dto.AdhesionResponse;
 import com.tontineApp.tontine_manager.dto.UpdateStatusDto;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.model.Adhesion;
-import com.tontineApp.tontine_manager.model.Tontine;
 import com.tontineApp.tontine_manager.model.Users;
 import com.tontineApp.tontine_manager.repository.TontineRepository;
 import com.tontineApp.tontine_manager.repository.UserRepository;
