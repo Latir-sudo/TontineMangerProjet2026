@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ACCEPTEE;
-import static com.tontineApp.tontine_manager.enumeration.StatutAdhesion.ATTENTE;
 
 @Slf4j
 @Service
@@ -34,51 +33,44 @@ public class AdhesionService {
     private final MembreService membreService;
 
     public List<AdhesionResponse> getAdhesionAttente(Integer idTontine) {
-        // débogage pour voir si mon controller a un problème ou non
-        System.out.println("adhesion en attente en cours");
-        log.info("Récupération des adhésions en attente pour la tontine {}", idTontine);
+        log.info("Recuperation des adhesions en attente pour la tontine {}", idTontine);
 
         if (!tontineRepository.existsById(idTontine)) {
-            throw new RessourceNotFoundException("Tontine " + idTontine + " non trouvée");
+            throw new RessourceNotFoundException("Tontine " + idTontine + " non trouvee");
         }
 
         List<Adhesion> adhesions = adhesionRepository.findByStatutAndTontine_Id(StatutAdhesion.ATTENTE, idTontine);
-        log.info("{} adhésion(s) en attente trouvée(s)", adhesions.size());
+        log.info("{} adhesion(s) en attente trouvee(s)", adhesions.size());
 
         return adhesions.stream()
                 .map(adhesionMapper::toAdhesionResponse)
                 .toList();
     }
 
-    // ✅ Traiter une adhésion (approuver/rejeter)
     @Transactional
     public AdhesionResponse traiterAdhesion(Integer idUser, UpdateStatusDto nouveau, Integer idTontine) {
-        log.info("Traitement de l'adhésion pour user={}, tontine={}, nouveau statut={}", idUser, idTontine, nouveau.getStatut());
+        if (nouveau == null || nouveau.getStatut() == null) {
+            throw new IllegalArgumentException("Le statut ne peut pas etre null");
+        }
+
+        StatutAdhesion nouveauStatut = StatutAdhesion.from(nouveau.getStatut());
+        log.info("Traitement de l'adhesion pour user={}, tontine={}, nouveau statut={}", idUser, idTontine, nouveauStatut);
 
         Adhesion adhesion = adhesionRepository.findByUser_IdAndTontine_Id(idUser, idTontine)
                 .orElseThrow(() -> new RessourceNotFoundException(
-                        String.format("Adhésion non trouvée pour l'utilisateur %d dans la tontine %d", idUser, idTontine)
+                        String.format("Adhesion non trouvee pour l'utilisateur %d dans la tontine %d", idUser, idTontine)
                 ));
 
-        if (nouveau == null || nouveau.getStatut() == null) {
-            throw new IllegalArgumentException("Le statut ne peut pas être null");
+        if (ACCEPTEE.equals(nouveauStatut) && adhesionRepository.existsByUser_IdAndTontine_IdAndStatut(idUser, idTontine, ACCEPTEE)) {
+            throw new UnAuthorizedException("utilisateur deja membre");
         }
 
-        // vérifier si l'utilisateur n'est pas déjà membre de la tontine
-        if((adhesionRepository.existsByUser_IdAndTontine_IdAndStatut(idUser,idTontine,ACCEPTEE))){
-            throw new UnAuthorizedException("utilisateur déjà membre");
+        adhesion.setStatut(nouveauStatut);
+        if (ACCEPTEE.equals(nouveauStatut) && adhesion.getDateAdhesion() == null) {
+            adhesion.setDateAdhesion(LocalDate.now());
         }
 
-        // Mettre à jour le statut
-        adhesion.setStatut(nouveau.getStatut());
-        if (nouveau.getDate() != null) {
-            adhesion.setDateAdhesion(nouveau.getDate());
-        }
-
-        // Si acceptée, créer le membre
-        if (ACCEPTEE.equals(nouveau.getStatut())) {
-            log.info("Création du membre pour l'utilisateur {} dans la tontine {}", idUser, idTontine);
-
+        if (ACCEPTEE.equals(nouveauStatut)) {
             MembreRequest membreRequest = new MembreRequest();
             membreRequest.setIdTontine(idTontine);
             membreRequest.setIdUser(idUser);
@@ -86,49 +78,46 @@ public class AdhesionService {
         }
 
         Adhesion saved = adhesionRepository.save(adhesion);
-        log.info("Adhésion traitée avec succès, nouveau statut: {}", saved.getStatut());
+        log.info("Adhesion traitee avec succes, nouveau statut: {}", saved.getStatut());
 
         return adhesionMapper.toAdhesionResponse(saved);
     }
 
-    // ✅ Créer une nouvelle demande d'adhésion
     public AdhesionResponse save(AdhesionRequest request, Integer idTontine) {
-        log.info("Création d'une demande d'adhésion pour user={}, tontine={}", request.getIdUser(), idTontine);
+        log.info("Creation d'une demande d'adhesion pour user={}, tontine={}", request.getIdUser(), idTontine);
 
         if (request == null) {
-            throw new IllegalArgumentException("La requête d'adhésion ne peut pas être null");
+            throw new IllegalArgumentException("La requete d'adhesion ne peut pas etre null");
         }
 
         Tontine tontine = tontineRepository.findById(idTontine)
-                .orElseThrow(() -> new RessourceNotFoundException("Tontine " + idTontine + " non trouvée"));
+                .orElseThrow(() -> new RessourceNotFoundException("Tontine " + idTontine + " non trouvee"));
 
         Adhesion adhesion = adhesionMapper.toAdhesion(request);
         adhesion.setTontine(tontine);
         Adhesion saved = adhesionRepository.save(adhesion);
-        log.info("Demande d'adhésion créée avec succès, id={}", saved.getId());
+        log.info("Demande d'adhesion creee avec succes, id={}", saved.getId());
 
         return adhesionMapper.toAdhesionResponse(saved);
     }
 
     @Transactional
     public AdhesionResponse ajouterUser(AdhesionRequest request, Integer idTontine) {
-
         if (request == null) {
-            throw new IllegalArgumentException("La requête d'adhésion ne peut pas être null");
+            throw new IllegalArgumentException("La requete d'adhesion ne peut pas etre null");
         }
 
         Tontine tontine = tontineRepository.findById(idTontine)
-                .orElseThrow(() -> new RessourceNotFoundException("Tontine " + idTontine + " non trouvée"));
+                .orElseThrow(() -> new RessourceNotFoundException("Tontine " + idTontine + " non trouvee"));
 
         Adhesion adhesion = adhesionMapper.toAdhesion(request);
         adhesion.setTontine(tontine);
         Adhesion saved = adhesionRepository.save(adhesion);
 
-        // on insérer dans la table membre
-        UpdateStatusDto statusDto=new UpdateStatusDto(ACCEPTEE, LocalDate.now());
-        this.traiterAdhesion(request.getIdUser(),statusDto,idTontine);
+        UpdateStatusDto statusDto = new UpdateStatusDto(ACCEPTEE.name());
+        this.traiterAdhesion(request.getIdUser(), statusDto, idTontine);
 
-        log.info("Demande d'adhésion créée avec succès, id={}", saved.getId());
+        log.info("Demande d'adhesion creee avec succes, id={}", saved.getId());
 
         return adhesionMapper.toAdhesionResponse(saved);
     }

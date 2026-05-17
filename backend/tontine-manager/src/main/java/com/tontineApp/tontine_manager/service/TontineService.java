@@ -112,7 +112,7 @@ public class TontineService {
         
         // Ajouter l'admin comme membre
         try {
-            MembreRequest membreRequest = new MembreRequest(admin.getId(), savedTontine.getId());
+            MembreRequest membreRequest = new MembreRequest(admin.getId(), savedTontine.getId(), LocalDate.now());
             membreService.ajouterUtilisateurATontine(membreRequest);
             log.info("Admin ajouté comme membre de la tontine");
             

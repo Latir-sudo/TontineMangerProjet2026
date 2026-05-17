@@ -3,6 +3,7 @@ package com.tontineApp.tontine_manager.mapper;
 import com.tontineApp.tontine_manager.dto.AdhesionRequest;
 import com.tontineApp.tontine_manager.dto.AdhesionResponse;
 import com.tontineApp.tontine_manager.dto.UpdateStatusDto;
+import com.tontineApp.tontine_manager.enumeration.StatutAdhesion;
 import com.tontineApp.tontine_manager.exception.RessourceNotFoundException;
 import com.tontineApp.tontine_manager.model.Adhesion;
 import com.tontineApp.tontine_manager.model.Users;
@@ -66,10 +67,7 @@ public class AdhesionMapper {
 
     public void updateAdhesionFromDto(Adhesion adhesion, UpdateStatusDto dto) {
         if (dto.getStatut() != null) {
-            adhesion.setStatut(dto.getStatut());
-        }
-        if (dto.getDate() != null) {
-            adhesion.setDateAdhesion(dto.getDate());
+            adhesion.setStatut(StatutAdhesion.from(dto.getStatut()));
         }
     }
 }

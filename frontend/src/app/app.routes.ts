@@ -12,10 +12,12 @@ import { DetailTontine } from './pages/detail-tontine/detail-tontine';
 import { MesTontines } from './pages/mes-tontines/mes-tontines';
 import { Administration } from './pages/administration/administration';
 import { AddMemberComponent } from './pages/mes-tontines/add-member/add-member.component';
+import { NotificationsComponent } from './pages/notifications/notifications.component';
 export const routes: Routes = [
   
   { path: 'accueil', component: Accueil },
   { path: 'tontine/gestion-membres/:id', component: AddMemberComponent, canActivate: [AuthGuard] }, // Route pour la gestion des membres d'une tontine spécifique
+  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
   
   // Routes d'authentification (publiques)
   { path: 'login', component: Login },
